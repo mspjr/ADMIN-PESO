@@ -1,3 +1,5 @@
+    import { supabase } from './supabaseClient.js';
+
     const togglePassword = document.getElementById("togglePassword");
     const password = document.getElementById("password");
     togglePassword.addEventListener("click", () => {
@@ -5,13 +7,6 @@
       password.setAttribute("type", type);
       togglePassword.classList.toggle("fa-eye-slash");
     });
-
-    
-    const SUPABASE_URL = "https://zvqsqntqoyksranhodfh.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2cXNxbnRxb3lrc3JhbmhvZGZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgxNjQ3NzMsImV4cCI6MjA3Mzc0MDc3M30.8A7kdHZmMFFNZMBLEhaAegkQOu4fVJ2-RwlMVN7dYSU";
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     
     const modal = document.getElementById("customModal");
