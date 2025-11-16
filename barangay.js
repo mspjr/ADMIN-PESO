@@ -1,4 +1,4 @@
-<script>
+import { supabase } from './supabaseClient.js';
     function toggleProfileMenu() {
       const profileMenu = document.getElementById('profile-menu');
       profileMenu.classList.toggle('show');
@@ -130,4 +130,3 @@
         row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
       });
     });
-  </script>
