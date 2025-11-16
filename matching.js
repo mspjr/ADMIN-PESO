@@ -1,4 +1,3 @@
-import { supabase } from './supabaseClient.js';
     const $  = (s, c=document) => c.querySelector(s);
     const $$ = (s, c=document) => [...c.querySelectorAll(s)];
 

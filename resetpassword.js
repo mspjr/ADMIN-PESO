@@ -1,5 +1,3 @@
-import { supabase } from './supabaseClient.js';
-   
     const modal = document.getElementById("customModal");
     const modalMessage = document.getElementById("modalMessage");
     const modalClose = document.getElementById("modalClose");

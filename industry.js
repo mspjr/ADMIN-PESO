@@ -1,4 +1,3 @@
-import { supabase } from './supabaseClient.js';
     document.querySelectorAll('.toggle-menu').forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();

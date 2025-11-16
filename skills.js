@@ -1,4 +1,3 @@
-import { supabase } from './supabaseClient.js'; 
    function toggleProfileMenu() {
       const profileMenu = document.getElementById('profile-menu');
       profileMenu.classList.toggle('show');
