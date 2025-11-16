@@ -99,25 +99,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    function toggleProfileMenu() {
-      const profileMenu = document.getElementById("profile-menu");
-      profileMenu.classList.toggle("show");
-    }
-
-    document.querySelectorAll('.toggle-menu').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        const submenu = btn.nextElementSibling;
-
-        document.querySelectorAll('.submenu').forEach(list => {
-          if (list !== submenu) list.classList.remove('show');
-        });
-
-        submenu.classList.toggle('show');
-      });
-    });
-  </script>
+  <script src="dashboard.js"></script>
+  
 </body>
 </html>
