@@ -1,5 +1,3 @@
-    import { supabase } from './supabaseClient.js';
-
     const togglePassword = document.getElementById("togglePassword");
     const password = document.getElementById("password");
     togglePassword.addEventListener("click", () => {

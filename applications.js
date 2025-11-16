@@ -1,4 +1,3 @@
-import { supabase } from './supabaseClient.js';
     document.addEventListener('DOMContentLoaded', () => {
       const profileIcon = document.getElementById('profileIcon');
       const profileDropdown = document.getElementById('profileDropdown');
