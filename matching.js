@@ -7,7 +7,7 @@
 
     const addModalBox = $("#addModalBox");
 
-    const btnNewMatch   = $("#btnNewMatch");
+    //const btnNewMatch   = $("#btnNewMatch");
     const cancelAdd     = $("#cancelAdd");
     const closeView     = $("#closeView");
     const cancelDelete  = $("#cancelDelete");
@@ -43,14 +43,14 @@
 
     let deleteRow = null;
 
-    btnNewMatch.addEventListener("click", () => {
+    /*btnNewMatch.addEventListener("click", () => {
       form.reset();
       editIndex.value = "";
       formTitle.textContent = "➕ New Match";
       addModalBox.classList.remove("edit-modal");
       addModalBox.classList.add("new-modal");
       open(addOverlay);
-    });
+    });*/
     cancelAdd.addEventListener("click", () => close(addOverlay));
 
     form.addEventListener("submit", (e) => {
