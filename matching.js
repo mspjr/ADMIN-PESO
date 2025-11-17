@@ -1,3 +1,6 @@
+if (localStorage.getItem('isLoggedIn')=='FALSE'){
+  window.location.href="./index.html";
+}
     const $  = (s, c=document) => c.querySelector(s);
     const $$ = (s, c=document) => [...c.querySelectorAll(s)];
 

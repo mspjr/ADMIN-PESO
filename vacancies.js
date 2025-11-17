@@ -1,3 +1,6 @@
+if (localStorage.getItem('isLoggedIn')=='FALSE'){
+  window.location.href="./index.html";
+}
 const profileIcon = document.getElementById('profileIcon');
     const profileDropdown = document.getElementById('profileDropdown');
 

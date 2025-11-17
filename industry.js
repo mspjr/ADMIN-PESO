@@ -1,3 +1,6 @@
+if (localStorage.getItem('isLoggedIn')=='FALSE'){
+  window.location.href="./index.html";
+}
     document.querySelectorAll('.toggle-menu').forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();

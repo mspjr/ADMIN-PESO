@@ -1,3 +1,7 @@
+if (localStorage.getItem('isLoggedIn')=='FALSE'){
+  window.location.href="./index.html";
+}
+
     function toggleProfileMenu() {
       const profileMenu = document.getElementById('profile-menu');
       profileMenu.classList.toggle('show');

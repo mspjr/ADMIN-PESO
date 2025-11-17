@@ -1,9 +1,8 @@
-if (sessionStorage.getItem('isLoggedIn')=='FALSE'){
-  window.location.href="./dashboard.html";
-  sessionStorage.clear();
+
+if (localStorage.getItem('isLoggedIn')=='FALSE'){
+  window.location.href="./index.html";
 }
-else
-{
+
 function toggleProfileMenu() {
       const profileMenu = document.getElementById("profile-menu");
       profileMenu.classList.toggle("show");
@@ -21,4 +20,3 @@ function toggleProfileMenu() {
         submenu.classList.toggle('show');
       });
     });
-  }
