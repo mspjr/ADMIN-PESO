@@ -1,4 +1,9 @@
- function toggleProfileMenu() {
+if (sessionStorage.getItem('isloggedIn')=="FALSE"){
+  window.location.href="./dashboard.html";
+  sessionStorage.clear();
+}
+
+function toggleProfileMenu() {
       const profileMenu = document.getElementById("profile-menu");
       profileMenu.classList.toggle("show");
     }

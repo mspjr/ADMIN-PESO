@@ -1,3 +1,5 @@
+sessionStorage.setItem('isloggedin','FALSE');
+
 const togglePassword = document.getElementById("togglePassword");
     const password = document.getElementById("password");
     togglePassword.addEventListener("click", () => {
@@ -43,6 +45,7 @@ const togglePassword = document.getElementById("togglePassword");
         showModal("❌ Invalid username or password!");
       } else {
         showModal("✅ Login successful! Redirecting...");
+        sessionStorage.setItem('isloggedin','TRUE');
         setTimeout(() => {
           window.location.href = "dashboard.html";
         }, 1500);
