@@ -17,19 +17,75 @@ if (localStorage.getItem('isLoggedIn')=='FALSE'){
       });
     });
 
-    const addModal      = document.getElementById("addModal");
-    const editModal     = document.getElementById("editModal");
-    const viewOverlay   = document.getElementById("viewOverlay");
-    const viewDetails   = document.getElementById("viewDetails");
-    const deleteOverlay = document.getElementById("deleteOverlay");
+
 
     const tableBody = document.getElementById("barangayTableBody");
     let deleteRowIndex = null;
 
-    document.getElementById("openAddModalBtn").onclick = () => {
-      addModal.style.display = "flex";
-      addModal.setAttribute("aria-hidden", "false");
+document.addEventListener('DOMContentLoaded', (event) => {
+        const addModal      = document.getElementById("addModal");
+        const editModal     = document.getElementById("editModal");
+        const viewOverlay   = document.getElementById("viewOverlay");
+        const viewDetails   = document.getElementById("viewDetails");
+        const deleteOverlay = document.getElementById("deleteOverlay");
+
+
+        document.getElementById("openAddModalBtn").onclick = () => {
+      	addModal.style.display = "flex";
+      	addModal.setAttribute("aria-hidden", "false");
+      };
+      
+      document.getElementById("closeView").onclick      = closeViewModal;
+      document.getElementById("cancelDeleteBtn").onclick = closeDeleteModal;
+
+      //saving
+      const saveBarangayBtn = document.getElementById("saveBarangayBtn");
+
+      saveBarangayBtn.onclick = () => {
+      const name = document.getElementById("addBarangayInput").value;
+      if (name.trim() === "") return;
+
+      const rowCount = tableBody.rows.length + 1;
+      tableBody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${rowCount}</td>
+          <td>${name}</td>
+          <td class="action-icons">
+            <i class="bi bi-eye-fill icon-view" title="View"></i>
+            <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
+            <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+          </td>
+        </tr>
+      `);
+      document.getElementById("addBarangayInput").value = "";
+      closeAddModal();
     };
+
+    //updating
+    document.getElementById("updateBarangayBtn").onclick = () => {
+      const row = tableBody.rows[editModal.dataset.row - 1];
+      row.children[1].innerText = document.getElementById("editBarangayInput").value;
+      closeEditModal();
+    };
+
+    //confirm delete
+    document.getElementById("confirmDeleteBtn").onclick = () => {
+      if (deleteRowIndex !== null) {
+        tableBody.deleteRow(deleteRowIndex - 1);
+        Array.from(tableBody.rows).forEach((tr, i) => tr.children[0].innerText = i + 1);
+      }
+      closeDeleteModal();
+    };
+
+    //search input
+    document.getElementById("searchInput").addEventListener("keyup", (e) => {
+      const q = e.target.value.toLowerCase();
+      Array.from(tableBody.rows).forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+
+});
 
     function closeAddModal() {
       addModal.style.display = "none";
@@ -52,30 +108,7 @@ if (localStorage.getItem('isLoggedIn')=='FALSE'){
       deleteRowIndex = null;
     }
 
-    document.getElementById("closeView").onclick      = closeViewModal;
-    document.getElementById("cancelDeleteBtn").onclick = closeDeleteModal;
-
-    const saveBarangayBtn = document.getElementById("saveBarangayBtn");
-
-    saveBarangayBtn.onclick = () => {
-      const name = document.getElementById("addBarangayInput").value;
-      if (name.trim() === "") return;
-
-      const rowCount = tableBody.rows.length + 1;
-      tableBody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${rowCount}</td>
-          <td>${name}</td>
-          <td class="action-icons">
-            <i class="bi bi-eye-fill icon-view" title="View"></i>
-            <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
-            <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
-          </td>
-        </tr>
-      `);
-      document.getElementById("addBarangayInput").value = "";
-      closeAddModal();
-    };
+    
 
     document.addEventListener("click", e => {
       if (e.target.classList.contains("icon-view")) {
@@ -105,19 +138,6 @@ if (localStorage.getItem('isLoggedIn')=='FALSE'){
       }
     });
 
-    document.getElementById("updateBarangayBtn").onclick = () => {
-      const row = tableBody.rows[editModal.dataset.row - 1];
-      row.children[1].innerText = document.getElementById("editBarangayInput").value;
-      closeEditModal();
-    };
-
-    document.getElementById("confirmDeleteBtn").onclick = () => {
-      if (deleteRowIndex !== null) {
-        tableBody.deleteRow(deleteRowIndex - 1);
-        Array.from(tableBody.rows).forEach((tr, i) => tr.children[0].innerText = i + 1);
-      }
-      closeDeleteModal();
-    };
 
     window.addEventListener("click", (e) => {
       if (e.target === viewOverlay)  closeViewModal();
@@ -126,9 +146,3 @@ if (localStorage.getItem('isLoggedIn')=='FALSE'){
       if (e.target === editModal)    closeEditModal();
     });
 
-    document.getElementById("searchInput").addEventListener("keyup", (e) => {
-      const q = e.target.value.toLowerCase();
-      Array.from(tableBody.rows).forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
-      });
-    });

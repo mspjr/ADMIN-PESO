@@ -1,4 +1,3 @@
-
 if (localStorage.getItem('isLoggedIn')=='FALSE'){
   window.location.href="./index.html";
 }
@@ -8,6 +7,7 @@ function toggleProfileMenu() {
       profileMenu.classList.toggle("show");
     }
 
+document.addEventListener('DOMContentLoaded', (event) => {
     document.querySelectorAll('.toggle-menu').forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();
@@ -20,3 +20,5 @@ function toggleProfileMenu() {
         submenu.classList.toggle('show');
       });
     });
+});
+   
