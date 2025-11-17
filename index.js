@@ -1,4 +1,4 @@
-sessionStorage.setItem('isloggedin','FALSE');
+sessionStorage.setItem('isLoggedIn','FALSE');
 
 const togglePassword = document.getElementById("togglePassword");
     const password = document.getElementById("password");

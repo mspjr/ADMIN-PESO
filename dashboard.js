@@ -1,4 +1,4 @@
-if (sessionStorage.getItem('isloggedIn')=='FALSE'){
+if (sessionStorage.getItem('isLoggedIn')=='FALSE'){
   window.location.href="./dashboard.html";
   sessionStorage.clear();
 }
