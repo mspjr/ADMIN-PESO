@@ -1,6 +1,6 @@
-// ADDED ⬇ Run everything after DOM is ready
+
 document.addEventListener('DOMContentLoaded', function() {
-// ADDED ⬆
+
 
 if (localStorage.getItem('isLoggedIn')=='FALSE'){
   window.location.href="./index.html";
@@ -21,7 +21,6 @@ cancelModalBtn.onclick  = () => addModal.style.display = "none";
 
 const addEstablishmentForm = document.getElementById("addEstablishmentForm");
 
-// ADDED ⬇ Helper to keep numbering starting at 1 after any change
 function renumberEstablishments() {
   const tbody = document
     .getElementById("establishmentTable")
@@ -30,7 +29,6 @@ function renumberEstablishments() {
     tr.children[0].textContent = i + 1;
   });
 }
-// ADDED ⬆
 
 addEstablishmentForm.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -65,9 +63,7 @@ addEstablishmentForm.addEventListener("submit", function (e) {
   row.dataset.contact = contactNumber;
   row.dataset.address = address;
 
-  // ADDED ⬇ ensure numbering is always consistent
   renumberEstablishments();
-  // ADDED ⬆
 
   addModal.style.display = "none";
   addEstablishmentForm.reset();
@@ -179,9 +175,7 @@ confirmDeleteBtn.onclick = () => {
     Array.from(tbody.rows).forEach((tr, i) => tr.children[0].textContent = i + 1);
   }
 
-  // ADDED ⬇ also ensure numbering is correct even after delete-all
   renumberEstablishments();
-  // ADDED ⬆
 
   deleteOverlay.style.display = 'none';
   deleteOverlay.setAttribute('aria-hidden', 'true');
@@ -203,7 +197,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// ADDED ⬇ Live search
+
 document.getElementById("searchInput")?.addEventListener("input", (e) => {
   const q = e.target.value.toLowerCase();
   const tbody = document
@@ -213,8 +207,6 @@ document.getElementById("searchInput")?.addEventListener("input", (e) => {
     row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
   });
 });
-// ADDED ⬆
 
-// ADDED ⬇ Close the DOMContentLoaded wrapper
 });
-// ADDED ⬆
+
