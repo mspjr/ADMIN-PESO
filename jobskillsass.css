@@ -145,6 +145,31 @@ body.dashboard-body {
   font-size: .98rem;
 }
 
+.top-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.search-box input {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  outline: none;
+  background: #fff;
+  font-size: .95rem;
+}
+
+.search-box input:focus {
+  border-color: #4a47ff;
+  box-shadow: 0 0 0 2px rgba(74, 71, 255, 0.12);
+}
+
 /* Cards */
 .ia-card {
   border-radius: 18px;
