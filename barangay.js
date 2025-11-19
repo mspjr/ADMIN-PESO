@@ -20,12 +20,12 @@ document.querySelectorAll('.toggle-menu').forEach(btn => {
 const tableBody = document.getElementById("barangayTableBody");
 let deleteRowIndex = null;
 
-/* ADDED: globals para ma-access sa mga functions/listeners sa labas */
-var addModal, editModal, viewOverlay, viewDetails, deleteOverlay; /* ADDED */
+
+var addModal, editModal, viewOverlay, viewDetails, deleteOverlay; 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-  /* ADDED: i-shadow ang tableBody na nasa taas (null yun sa head load) */
-  const tableBody = document.getElementById("barangayTableBody"); /* ADDED */
+ 
+  const tableBody = document.getElementById("barangayTableBody"); 
 
   const addModal      = document.getElementById("addModal");
   const editModal     = document.getElementById("editModal");
@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const viewDetails   = document.getElementById("viewDetails");
   const deleteOverlay = document.getElementById("deleteOverlay");
 
-  /* ADDED: i-expose ang mga elements sa global scope para magamit ng close* at global listeners */
-  window.addModal = addModal;         /* ADDED */
-  window.editModal = editModal;       /* ADDED */
-  window.viewOverlay = viewOverlay;   /* ADDED */
-  window.viewDetails = viewDetails;   /* ADDED */
-  window.deleteOverlay = deleteOverlay; /* ADDED */
+  
+  window.addModal = addModal;       
+  window.editModal = editModal;       
+  window.viewOverlay = viewOverlay;   
+  window.viewDetails = viewDetails;  
+  window.deleteOverlay = deleteOverlay; 
 
   document.getElementById("openAddModalBtn").onclick = () => {
     addModal.style.display = "flex";
@@ -71,14 +71,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     closeAddModal();
   };
 
-  //updating
+  
   document.getElementById("updateBarangayBtn").onclick = () => {
     const row = tableBody.rows[editModal.dataset.row - 1];
     row.children[1].innerText = document.getElementById("editBarangayInput").value;
     closeEditModal();
   };
 
-  //confirm delete
+ 
   document.getElementById("confirmDeleteBtn").onclick = () => {
     if (deleteRowIndex !== null) {
       tableBody.deleteRow(deleteRowIndex - 1);
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     closeDeleteModal();
   };
 
-  //search input
+ 
   document.getElementById("searchInput").addEventListener("keyup", (e) => {
     const q = e.target.value.toLowerCase();
     Array.from(tableBody.rows).forEach(row => {
