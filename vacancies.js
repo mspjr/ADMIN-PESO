@@ -1,6 +1,5 @@
-// ADDED ↓ run everything after DOM is ready (prevents null element errors)
 document.addEventListener('DOMContentLoaded', function() {
-// ADDED ↑
+
 
 if (localStorage.getItem('isLoggedIn')=='FALSE'){
   window.location.href="./index.html";
@@ -166,6 +165,4 @@ window.onclick = (e) => {
   }
 };
 
-// ADDED ↓ close DOMContentLoaded wrapper
 });
-// ADDED ↑
