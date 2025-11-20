@@ -1,3 +1,6 @@
+/* =========================
+   EXISTING CSS (UNCHANGED)
+   ========================= */
 .header {
   display: flex;
   justify-content: space-between; 
@@ -257,7 +260,6 @@ body.dashboard-body {
 .icon-edit   { color: #f0ad4e; }
 .icon-delete { color: #eb43357d; }
 
-
 .badge {
   padding: 5px 10px;
   border-radius: 6px;
@@ -329,7 +331,7 @@ body.dashboard-body {
 }
 
 .form-group input,
-.form-group select,
+form-group select,
 .form-group textarea {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -484,4 +486,115 @@ body.dashboard-body {
   .form-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========================= */
+/* ADDED: Employer section   */
+/* ========================= */
+
+.emp-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+#employersTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+#employersTable thead th {
+  background: #ffd972;
+  color: #000;
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#employersTable thead th:last-child {
+  width: 140px;
+}
+
+#employersTable td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.95rem;
+}
+
+#employersTable tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Extra badge for employer inactive status */
+.badge.inactive { background: #f8d7da; color: #721c24; }
+
+/* Employer action icon colors */
+.icon-view-emp   { color: #4a47ff; }
+.icon-edit-emp   { color: #f0ad4e; }
+.icon-delete-emp { color: #eb43357d; }
+
+/* =========================================================
+   NEW: Rounded bordered panels + 10-row viewport + scrolling
+   (Applies to BOTH employers & establishments tables)
+   ========================================================= */
+
+/* Tweakable heights for the header and row to fit ~10 rows */
+:root{
+  --row-h: 48px;   /* approx tbody row height */
+  --head-h: 56px;  /* approx thead height      */
+}
+
+/* Wrap (panel) around each table with clear boundary */
+.users-section .table-container{
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+  overflow: auto;
+
+  /* Keep viewport ≈ 10 rows tall (even if empty) */
+  min-height: calc(var(--head-h) + (10 * var(--row-h)));
+  max-height: calc(var(--head-h) + (10 * var(--row-h)));
+}
+
+/* Make header sticky when scrolling */
+#employersTable thead th,
+#establishmentTable thead th{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #ffd972;
+}
+
+/* Fixed row height so 10 rows = predictable height */
+#employersTable tbody tr,
+#establishmentTable tbody tr{
+  height: var(--row-h);
+}
+
+/* Optional inner grid lines for clarity */
+#employersTable th, #employersTable td,
+#establishmentTable th, #establishmentTable td{
+  border-right: 1px solid #f0f2f5;
+}
+#employersTable th:last-child, #employersTable td:last-child,
+#establishmentTable th:last-child, #establishmentTable td:last-child{
+  border-right: 0;
+}
+
+/* Subtle zebra + hover retained */
+#employersTable tbody tr:nth-child(odd),
+#establishmentTable tbody tr:nth-child(odd){ background:#fcfcfd; }
+#employersTable tbody tr:hover,
+#establishmentTable tbody tr:hover{ background:#fafafa; }
+
+/* =========================================================
+   SPACE ABOVE ESTABLISHMENT SEARCH BAR (ONLY that one)
+   The .users-section (employers) followed by .top-controls
+   gets extra top margin so it won't stick to the above table.
+   ========================================================= */
+.users-section + .top-controls{
+  margin-top: 22px;  /* adjust if you want more/less space */
 }
