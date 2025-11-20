@@ -12,8 +12,7 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="supabaseClient.js"></script>
-  <script src="employer.js"></script>
-
+  <script defer src="employer.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -61,8 +60,8 @@
   <main class="main-content">
     <header class="header">
       <div>
-        <h1>🏢 Establishment Management</h1>
-        <p>View, verify, and manage business establishments in General Santos City.</p>
+        <h1>🏢Employer Management</h1>
+        <p>View, verify, and manage employer records across General Santos City.</p>
       </div>
 
       <div class="profile-container">
@@ -76,6 +75,40 @@
       </div>
     </header>
 
+    <!-- ===== EMPLOYER SECTION (ADDED) ===== -->
+    <div class="emp-controls">
+      <div class="search-box">
+        <input type="text" id="employerSearchInput" placeholder="Search employer..." />
+      </div>
+      <button class="btn-add" id="openEmpModalBtn">
+        <i class="bi bi-person-plus"></i> Add Employer
+      </button>
+    </div>
+
+    <section class="users-section">
+      <div class="card">
+        <div class="table-container">
+          <table id="employersTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Employer Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Date Registered</th>
+                <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows added via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <!-- ===== END EMPLOYER SECTION ===== -->
+
+    <!-- Existing Establishment controls + table (UNCHANGED HEADERS) -->
     <div class="top-controls">
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search establishment..." />
@@ -94,7 +127,6 @@
                 <th>#</th>
                 <th>Establishment Name</th>
                 <th>Owner / Contact</th>
-                <th>Email</th>
                 <th>Industry</th>
                 <th>Status</th>
                 <th>Date Registered</th>
@@ -108,6 +140,7 @@
     </section>
   </main>
 
+  <!-- Add Establishment Modal (EMAIL & CONTACT REMOVED) -->
   <div id="addModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -125,14 +158,8 @@
             <label for="ownerName">Owner / Contact Person</label>
             <input type="text" id="ownerName" name="ownerName" required />
           </div>
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required />
-          </div>
-          <div class="form-group">
-            <label for="contactNumber">Contact Number</label>
-            <input type="text" id="contactNumber" name="contactNumber" required />
-          </div>
+          <!-- Email Address field removed -->
+          <!-- Contact Number field removed -->
           <div class="form-group">
             <label for="industry">Industry Type</label>
             <select id="industry" name="industry" required>
@@ -160,6 +187,7 @@
     </div>
   </div>
 
+  <!-- View Establishment Modal (UNCHANGED) -->
   <div class="skl-overlay" id="viewOverlay" aria-hidden="true">
     <div class="skl-modal view-modal" role="dialog" aria-modal="true" aria-labelledby="establishmentViewTitle">
       <h2 id="establishmentViewTitle">👁️ View Establishment</h2>
@@ -170,6 +198,7 @@
     </div>
   </div>
 
+  <!-- Edit Establishment Modal (no email/contact here already) -->
   <div id="editModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -186,14 +215,6 @@
           <div class="form-group">
             <label for="editOwner">Owner / Contact Person</label>
             <input type="text" id="editOwner" name="editOwner" required />
-          </div>
-          <div class="form-group">
-            <label for="editEmail">Email Address</label>
-            <input type="email" id="editEmail" name="editEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="editContact">Contact Number</label>
-            <input type="text" id="editContact" name="editContact" required />
           </div>
           <div class="form-group">
             <label for="editIndustry">Industry Type</label>
@@ -222,6 +243,7 @@
     </div>
   </div>
 
+  <!-- Delete Establishment Modal (UNCHANGED) -->
   <div class="skl-overlay" id="deleteOverlay" aria-hidden="true">
     <div class="skl-modal" role="dialog" aria-modal="true" aria-labelledby="deleteEstablishmentTitle">
       <h2 id="deleteEstablishmentTitle">⚠️ Delete Establishment</h2>
@@ -232,5 +254,112 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== EMPLOYER MODALS (ADDED) ===== -->
+
+  <!-- Add Employer Modal -->
+  <div id="addEmpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="bi bi-person-plus"></i> Add Employer</h2>
+        <span class="close-btn" id="closeEmpModalBtn">&times;</span>
+      </div>
+
+      <form id="addEmployerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="empFirstName">First Name</label>
+            <input type="text" id="empFirstName" name="empFirstName" required />
+          </div>
+          <div class="form-group">
+            <label for="empLastName">Last Name</label>
+            <input type="text" id="empLastName" name="empLastName" required />
+          </div>
+          <div class="form-group">
+            <label for="empEmail">Email</label>
+            <input type="email" id="empEmail" name="empEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="empStatus">Status</label>
+            <select id="empStatus" name="empStatus" required>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancelEmpModalBtn">Cancel</button>
+          <button type="submit" class="btn-save">Save Employer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Employer Modal -->
+  <div class="skl-overlay" id="empViewOverlay" aria-hidden="true">
+    <div class="skl-modal view-modal" role="dialog" aria-modal="true" aria-labelledby="employerViewTitle">
+      <h2 id="employerViewTitle">👁️ View Employer</h2>
+      <div id="empViewDetails"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-close-modal" id="closeEmpView">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Employer Modal -->
+  <div id="editEmpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>✏️ Edit Employer</h2>
+        <span class="close-btn" id="closeEmpEditBtn">&times;</span>
+      </div>
+
+      <form id="editEmpForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editEmpFirst">First Name</label>
+            <input type="text" id="editEmpFirst" name="editEmpFirst" required />
+          </div>
+          <div class="form-group">
+            <label for="editEmpLast">Last Name</label>
+            <input type="text" id="editEmpLast" name="editEmpLast" required />
+          </div>
+          <div class="form-group">
+            <label for="editEmpEmail">Email</label>
+            <input type="email" id="editEmpEmail" name="editEmpEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="editEmpStatus">Status</label>
+            <select id="editEmpStatus" name="editEmpStatus" required>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancelEmpEditBtn">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Employer Modal -->
+  <div class="skl-overlay" id="deleteEmpOverlay" aria-hidden="true">
+    <div class="skl-modal" role="dialog" aria-modal="true" aria-labelledby="deleteEmployerTitle">
+      <h2 id="deleteEmployerTitle">⚠️ Delete Employer</h2>
+      <p id="deleteEmpBody"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="cancelDeleteEmpBtn">Cancel</button>
+        <button type="button" class="btn-delete" id="confirmDeleteEmpBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+  <!-- ===== END EMPLOYER MODALS ===== -->
+
 </body>
 </html>
