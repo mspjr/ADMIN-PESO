@@ -1,5 +1,5 @@
-if (localStorage.getItem('isLoggedIn')=='FALSE'){
-  window.location.href="./index.html";
+if (localStorage.getItem('isLoggedIn') == 'FALSE') {
+  window.location.href = "./index.html";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,16 +11,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.toggleProfileMenu = toggleProfileMenu;
 
+  function enforceDataAssignmentOpen() {
+    const master = byId('submenuMasterData');
+    const data   = byId('submenuDataAssignment');
+    if (master) master.classList.remove('show');
+    if (data)   data.classList.add('show');
+  }
+  enforceDataAssignmentOpen();
+
   document.querySelectorAll('.toggle-menu').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
-      const submenu = btn.nextElementSibling;
-      document.querySelectorAll('.submenu').forEach(list => {
-        if (list !== submenu) list.classList.remove('show');
-      });
-      submenu.classList.toggle('show');
+      const mySubmenu = btn.nextElementSibling;
+
+      document.querySelectorAll('.submenu').forEach(list => list.classList.remove('show'));
+      if (mySubmenu) mySubmenu.classList.add('show');
     });
   });
+
+  const linkIndustryAss = document.getElementById('linkIndustryAss');
+  if (linkIndustryAss) {
+    linkIndustryAss.addEventListener('click', () => {
+      enforceDataAssignmentOpen();
+    });
+  }
 
   const STORE_KEYS = {
     industries: 'skillocal_industries',
@@ -413,7 +427,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   byId('searchInput')?.addEventListener('input', renderAssignmentsTable);
 
-
   (function init() {
     renderIndustriesTable();
     renderJobsTable();
@@ -422,7 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAssignmentsTable();
   })();
 
- 
   ['tblIndustries','tblJobs','tblAssignments'].forEach(id => {
     const tbody = byId(id)?.querySelector('tbody');
     if (!tbody) return;
