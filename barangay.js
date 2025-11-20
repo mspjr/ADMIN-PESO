@@ -1,27 +1,16 @@
 if (localStorage.getItem('isLoggedIn')=='FALSE'){
   window.location.href="./index.html";
 }
+
 function toggleProfileMenu() {
   const profileMenu = document.getElementById('profile-menu');
   profileMenu.classList.toggle('show');
 }
 
-document.querySelectorAll('.toggle-menu').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    const submenu = btn.nextElementSibling;
-    document.querySelectorAll('.submenu').forEach(list => {
-      if (list !== submenu) list.classList.remove('show');
-    });
-    submenu.classList.toggle('show');
-  });
-});
-
 const tableBody = document.getElementById("barangayTableBody");
 let deleteRowIndex = null;
 
 var addModal, editModal, viewOverlay, viewDetails, deleteOverlay; 
-
 
 function renumberBarangays() {
   const tbody = document.getElementById("barangayTableBody");
@@ -31,23 +20,31 @@ function renumberBarangays() {
   });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.toggle-menu').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const submenu = btn.nextElementSibling;
+      document.querySelectorAll('.submenu').forEach(list => {
+        if (list !== submenu) list.classList.remove('show');
+      });
+      submenu.classList.toggle('show');
+    });
+  });
 
-document.addEventListener('DOMContentLoaded', (event) => {
- 
   const tableBody = document.getElementById("barangayTableBody"); 
 
-  const addModal      = document.getElementById("addModal");
-  const editModal     = document.getElementById("editModal");
-  const viewOverlay   = document.getElementById("viewOverlay");
-  const viewDetails   = document.getElementById("viewDetails");
-  const deleteOverlay = document.getElementById("deleteOverlay");
+  const addModalEl      = document.getElementById("addModal");
+  const editModalEl     = document.getElementById("editModal");
+  const viewOverlayEl   = document.getElementById("viewOverlay");
+  const viewDetailsEl   = document.getElementById("viewDetails");
+  const deleteOverlayEl = document.getElementById("deleteOverlay");
 
-  
-  window.addModal = addModal;       
-  window.editModal = editModal;       
-  window.viewOverlay = viewOverlay;   
-  window.viewDetails = viewDetails;  
-  window.deleteOverlay = deleteOverlay; 
+  addModal      = addModalEl;       
+  editModal     = editModalEl;       
+  viewOverlay   = viewOverlayEl;   
+  viewDetails   = viewDetailsEl;  
+  deleteOverlay = deleteOverlayEl; 
 
   document.getElementById("openAddModalBtn").onclick = () => {
     addModal.style.display = "flex";
@@ -57,7 +54,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   document.getElementById("closeView").onclick       = closeViewModal;
   document.getElementById("cancelDeleteBtn").onclick = closeDeleteModal;
 
-  
   const saveBarangayBtn = document.getElementById("saveBarangayBtn");
 
   saveBarangayBtn.onclick = () => {
@@ -77,43 +73,34 @@ document.addEventListener('DOMContentLoaded', (event) => {
       </tr>
     `);
 
-   
     renumberBarangays();
-   
 
     document.getElementById("addBarangayInput").value = "";
     closeAddModal();
   };
 
-  
   document.getElementById("updateBarangayBtn").onclick = () => {
     const row = tableBody.rows[editModal.dataset.row - 1];
     row.children[1].innerText = document.getElementById("editBarangayInput").value;
     closeEditModal();
   };
 
- 
   document.getElementById("confirmDeleteBtn").onclick = () => {
     if (deleteRowIndex !== null) {
       tableBody.deleteRow(deleteRowIndex - 1);
       Array.from(tableBody.rows).forEach((tr, i) => tr.children[0].innerText = i + 1);
     }
 
-  
     renumberBarangays();
-    
-
     closeDeleteModal();
   };
 
- 
   document.getElementById("searchInput").addEventListener("keyup", (e) => {
     const q = e.target.value.toLowerCase();
     Array.from(tableBody.rows).forEach(row => {
       row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
     });
   });
-
 });
 
 function closeAddModal() {
