@@ -12,8 +12,8 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="supabaseClient.js"></script>
-  <script src="barangay.js"></script>
-
+  <!-- IMPORTANT: defer para gumana ang toggle-menu pagkatapos ma-load ang DOM -->
+  <script defer src="barangay.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -32,6 +32,7 @@
           <ul class="submenu list-unstyled ms-3 show">
             <li><a class="submenu-item active" href="barangay.html">🏘 Barangay</a></li>
             <li><a class="submenu-item" href="employer.html">🏢 Employer</a></li>
+            <li><a class="submenu-item" href="employee.html">👨‍💼 Employee</a></li>
             <li><a class="submenu-item" href="industry.html">🏭 Industry</a></li>
             <li><a class="submenu-item" href="skilledjob.html">🧑‍🔧 Skilled Job</a></li>
             <li><a class="submenu-item" href="skills.html">🧰 Skills</a></li>
