@@ -10,6 +10,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   window.toggleProfileMenu = toggleProfileMenu;
 
+  document.querySelectorAll('.toggle-menu').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const submenu = btn.nextElementSibling;
+      document.querySelectorAll('.submenu').forEach(list => {
+        if (list !== submenu) list.classList.remove('show');
+      });
+      submenu.classList.toggle('show');
+    });
+  });
+
   const openModalBtn      = document.getElementById("openModalBtn");
   const addModal          = document.getElementById("addModal");
   const closeModalBtn     = document.getElementById("closeModalBtn");
