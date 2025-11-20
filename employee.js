@@ -7,17 +7,6 @@ function toggleProfileMenu() {
   profileMenu.classList.toggle('show');
 }
 
-document.querySelectorAll('.toggle-menu').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    const submenu = btn.nextElementSibling;
-    document.querySelectorAll('.submenu').forEach(list => {
-      if (list !== submenu) list.classList.remove('show');
-    });
-    submenu.classList.toggle('show');
-  });
-});
-
 const tableBody = document.getElementById("employeeTableBody");
 let deleteRowIndex = null;
 
@@ -32,6 +21,22 @@ function renumberEmployees() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.toggle-menu').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const submenu = btn.nextElementSibling;
+      const hasSubmenu = submenu && submenu.classList.contains('submenu');
+
+      if (hasSubmenu) {
+        e.preventDefault(); 
+        document.querySelectorAll('.submenu').forEach(list => {
+          if (list !== submenu) list.classList.remove('show');
+        });
+        submenu.classList.toggle('show');
+      }
+    });
+  });
+
+
   const tableBody = document.getElementById("employeeTableBody");
 
   const addModalEl      = document.getElementById("addModal");
