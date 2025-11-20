@@ -29,7 +29,7 @@
             ⚙️ Master Data
             <i class="fa-solid fa-chevron-down ms-auto"></i>
           </a>
-          <ul class="submenu list-unstyled ms-3 show">
+          <ul id="submenuMasterData" class="submenu list-unstyled ms-3">
             <li><a class="submenu-item" href="barangay.html">🏘 Barangay</a></li>
             <li><a class="submenu-item" href="employer.html">🏢 Employer</a></li>
             <li><a class="submenu-item" href="industry.html">🏭 Industry</a></li>
@@ -38,14 +38,19 @@
           </ul>
         </li>
 
+        <!-- DATA ASSIGNMENT - default open on this page -->
         <li class="nav-item">
           <a href="#" class="nav-link toggle-menu">
             🧩 Data Assignment
             <i class="fa-solid fa-chevron-down ms-auto"></i>
           </a>
-          <ul class="submenu list-unstyled ms-3">
+          <ul id="submenuDataAssignment" class="submenu list-unstyled ms-3 show">
             <li><a class="submenu-item" href="industryass.html">🏭 Industry Job Assignment</a></li>
-            <li><a class="submenu-item active" href="jobskillsass.html">🧰 Job Skills Assignment</a></li>
+            <li>
+              <a id="linkJobSkillsAss" class="submenu-item active" href="jobskillsass.html">
+                🧰 Job Skills Assignment
+              </a>
+            </li>
           </ul>
         </li>
 
@@ -75,7 +80,7 @@
       </div>
     </header>
 
-     <div class="top-controls mb-3">
+    <div class="top-controls mb-3">
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search by industry or job...">
       </div>
