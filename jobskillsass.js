@@ -5,22 +5,42 @@ if (localStorage.getItem('isLoggedIn')=='FALSE'){
 document.addEventListener('DOMContentLoaded', () => {
   function byId(id){ return document.getElementById(id); }
 
+  // Profile dropdown
   function toggleProfileMenu() {
     const profileMenu = document.getElementById('profile-menu');
     profileMenu.classList.toggle('show');
   }
   window.toggleProfileMenu = toggleProfileMenu;
 
+  // ===== NAVIGATION BEHAVIOR FIX =====
+  const submenuMasterData     = byId('submenuMasterData');
+  const submenuDataAssignment = byId('submenuDataAssignment');
+
+  // Force correct state on Job Skills Assignment page
+  if (submenuMasterData)     submenuMasterData.classList.remove('show');
+  if (submenuDataAssignment) submenuDataAssignment.classList.add('show');
+
+  // Top-level toggles - close others then open clicked group
   document.querySelectorAll('.toggle-menu').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
-      const submenu = btn.nextElementSibling;
+      const mySub = btn.nextElementSibling;
       document.querySelectorAll('.submenu').forEach(list => {
-        if (list !== submenu) list.classList.remove('show');
+        list.classList.remove('show');
       });
-      submenu.classList.toggle('show');
+      if (mySub) mySub.classList.add('show');
     });
   });
+
+  // Optional: when clicking Job Skills Assignment link itself, keep nav consistent
+  const linkJobSkillsAss = byId('linkJobSkillsAss');
+  if (linkJobSkillsAss) {
+    linkJobSkillsAss.addEventListener('click', () => {
+      if (submenuMasterData)     submenuMasterData.classList.remove('show');
+      if (submenuDataAssignment) submenuDataAssignment.classList.add('show');
+    });
+  }
+  // ===== END NAV FIX =====
 
   const STORE_KEYS = {
     jobs:       'skillocal_js_jobs',
@@ -405,7 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAssignmentsTable();
     });
   }
-
 
   ['tblJobs','tblSkills','tblAssignments'].forEach(id => {
     const tbody = byId(id)?.querySelector('tbody');
