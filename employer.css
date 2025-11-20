@@ -1,6 +1,4 @@
-/* =========================
-   EXISTING CSS (UNCHANGED)
-   ========================= */
+
 .header {
   display: flex;
   justify-content: space-between; 
@@ -488,9 +486,6 @@ form-group select,
   }
 }
 
-/* ========================= */
-/* ADDED: Employer section   */
-/* ========================= */
 
 .emp-controls {
   display: flex;
@@ -527,26 +522,18 @@ form-group select,
   background: #f9fafb;
 }
 
-/* Extra badge for employer inactive status */
 .badge.inactive { background: #f8d7da; color: #721c24; }
 
-/* Employer action icon colors */
+
 .icon-view-emp   { color: #4a47ff; }
 .icon-edit-emp   { color: #f0ad4e; }
 .icon-delete-emp { color: #eb43357d; }
 
-/* =========================================================
-   NEW: Rounded bordered panels + 10-row viewport + scrolling
-   (Applies to BOTH employers & establishments tables)
-   ========================================================= */
-
-/* Tweakable heights for the header and row to fit ~10 rows */
 :root{
-  --row-h: 48px;   /* approx tbody row height */
-  --head-h: 56px;  /* approx thead height      */
+  --row-h: 48px;   
+  --head-h: 56px;  
 }
 
-/* Wrap (panel) around each table with clear boundary */
 .users-section .table-container{
   border: 1.5px solid #e5e7eb;
   border-radius: 16px;
@@ -554,12 +541,10 @@ form-group select,
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
   overflow: auto;
 
-  /* Keep viewport ≈ 10 rows tall (even if empty) */
   min-height: calc(var(--head-h) + (10 * var(--row-h)));
   max-height: calc(var(--head-h) + (10 * var(--row-h)));
 }
 
-/* Make header sticky when scrolling */
 #employersTable thead th,
 #establishmentTable thead th{
   position: sticky;
@@ -568,13 +553,11 @@ form-group select,
   background: #ffd972;
 }
 
-/* Fixed row height so 10 rows = predictable height */
 #employersTable tbody tr,
 #establishmentTable tbody tr{
   height: var(--row-h);
 }
 
-/* Optional inner grid lines for clarity */
 #employersTable th, #employersTable td,
 #establishmentTable th, #establishmentTable td{
   border-right: 1px solid #f0f2f5;
@@ -584,17 +567,11 @@ form-group select,
   border-right: 0;
 }
 
-/* Subtle zebra + hover retained */
 #employersTable tbody tr:nth-child(odd),
 #establishmentTable tbody tr:nth-child(odd){ background:#fcfcfd; }
 #employersTable tbody tr:hover,
 #establishmentTable tbody tr:hover{ background:#fafafa; }
 
-/* =========================================================
-   SPACE ABOVE ESTABLISHMENT SEARCH BAR (ONLY that one)
-   The .users-section (employers) followed by .top-controls
-   gets extra top margin so it won't stick to the above table.
-   ========================================================= */
 .users-section + .top-controls{
-  margin-top: 22px;  /* adjust if you want more/less space */
+  margin-top: 22px;  
 }
