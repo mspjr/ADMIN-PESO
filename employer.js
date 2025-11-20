@@ -1,20 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  // ==== Keep existing login guard (UNCHANGED) ====
   if (localStorage.getItem('isLoggedIn')=='FALSE'){
     window.location.href="./index.html";
   }
 
-  // Expose toggleProfileMenu globally for inline onclick (no change to your HTML)
   function toggleProfileMenu() {
     const profileMenu = document.getElementById('profile-menu');
     profileMenu.classList.toggle('show'); 
   }
   window.toggleProfileMenu = toggleProfileMenu;
 
-  // ==========================
-  // Establishment
-  // ==========================
   const openModalBtn      = document.getElementById("openModalBtn");
   const addModal          = document.getElementById("addModal");
   const closeModalBtn     = document.getElementById("closeModalBtn");
@@ -35,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ADD: email & contact fields removed; Email column also removed from table
   addEstablishmentForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -90,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', (e) => {
     const icon = e.target;
 
-    // Establishment action handlers (uses .icon-xxx classes; table ID checked)
     if (icon.closest('.icon-view')) {
       const row   = icon.closest('tr');
       if (!row || !row.closest('#establishmentTable')) return;
@@ -199,9 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ==========================
-  // EMPLOYER (ADDED, unchanged)
-  // ==========================
   const employerTable = document.getElementById("employersTable");
   const employerTbody = employerTable.tBodies[0];
   const employerSearchInput = document.getElementById("employerSearchInput");
@@ -242,12 +232,10 @@ document.addEventListener('DOMContentLoaded', function() {
     return '<span class="badge inactive">Inactive</span>';
   }
 
-  // Add Employer modal controls
   openEmpModalBtn.onclick  = () => addEmpModal.style.display = "flex";
   closeEmpModalBtn.onclick = () => addEmpModal.style.display = "none";
   cancelEmpModalBtn.onclick = () => addEmpModal.style.display = "none";
 
-  // Save Employer to table
   addEmployerForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -273,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
       </td>
     `;
 
-    // Attach raw data to dataset for editing/viewing later
     tr.dataset.first  = first;
     tr.dataset.last   = last;
     tr.dataset.email  = email;
@@ -285,7 +272,6 @@ document.addEventListener('DOMContentLoaded', function() {
     addEmployerForm.reset();
   });
 
-  // Employer action handlers — distinct classes avoid conflict with establishments
   document.addEventListener('click', (e) => {
     const icon = e.target;
 
@@ -336,7 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Employer modals close/cancel
   closeEmpViewBtn.onclick = () => {
     empViewOverlay.style.display = 'none';
     empViewOverlay.setAttribute('aria-hidden', 'true');
@@ -353,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
     empRowToDelete = null;
   };
 
-  // Save edited employer
   editEmpForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!empRowToEdit) return;
@@ -369,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
     empRowToEdit.children[2].textContent = email;
     empRowToEdit.children[3].innerHTML   = statusBadge(stat);
 
-    // Update dataset
     empRowToEdit.dataset.first  = first;
     empRowToEdit.dataset.last   = last;
     empRowToEdit.dataset.email  = email;
@@ -379,7 +362,6 @@ document.addEventListener('DOMContentLoaded', function() {
     editEmpModal.setAttribute('aria-hidden', 'true');
   });
 
-  // Confirm delete employer
   confirmDeleteEmpBtn.onclick = () => {
     if (empRowToDelete) {
       const tbody = empRowToDelete.parentElement;
@@ -391,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function() {
     empRowToDelete = null;
   };
 
-  // Overlay click-to-close for employer modals
   window.addEventListener('click', (e) => {
     if (e.target === empViewOverlay)  { closeEmpViewBtn.click(); }
     if (e.target === addEmpModal)     { addEmpModal.style.display = 'none'; }
@@ -399,7 +380,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === deleteEmpOverlay){ cancelDeleteEmpBtn.click(); }
   });
 
-  // Employer search (Name or Email)
   function filterEmployerRows(q) {
     const query = (q || "").toLowerCase().trim();
     Array.from(employerTbody.rows).forEach((row) => {
