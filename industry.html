@@ -95,7 +95,7 @@
           </tr>
         </thead>
         <tbody id="industryTableBody">
-          <tr>
+          <!-- <tr>
             <td>1</td>
             <td>Construction</td>
             <td>Building and infrastructure projects</td>
@@ -104,7 +104,7 @@
               <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
               <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
             </td>
-          </tr>
+          </tr> -->
         </tbody>
       </table>
     </div>
@@ -126,6 +126,7 @@
     <div class="modal-box">
       <h3>Edit Industry</h3>
       <input type="text" id="editIndustryName" placeholder="Industry Name">
+      <input type="hidden" id="editIndustryId" placeholder="Industry Id"> 
       <textarea id="editIndustryDesc" rows="5" placeholder="Description"></textarea>
       <div class="modal-actions">
         <button class="btn-save" id="updateIndustryBtn">Update</button>
@@ -147,6 +148,7 @@
   <div class="skl-overlay" id="deleteOverlay" aria-hidden="true">
     <div class="skl-modal" role="dialog" aria-modal="true" aria-labelledby="deleteIndustryTitle">
       <h2 id="deleteIndustryTitle">⚠️ Delete Industry</h2>
+      <input type="hidden" id="deleteIndustryId" placeholder="Industry Id">
       <p id="deleteIndustryText"></p>
       <div class="modal-actions">
         <button type="button" class="btn-cancel" id="cancelDeleteBtn">Cancel</button>

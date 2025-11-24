@@ -1,4 +1,6 @@
 localStorage.setItem('isLoggedIn','FALSE');
+localStorage.setItem('userId',''); //clear userId on logout
+
 const togglePassword = document.getElementById("togglePassword");
     const password = document.getElementById("password");
     togglePassword.addEventListener("click", () => {
@@ -34,10 +36,11 @@ const togglePassword = document.getElementById("togglePassword");
       }
 
       const { data, error } = await supabase
-        .from("admins")
+        .from("Users")
         .select("*")
-        .eq("username", username)
+        .eq("email", username)
         .eq("password", passwordValue)
+        .eq("role", "PesoAdmin")
         .single();
 
       if (error || !data) {
@@ -45,10 +48,9 @@ const togglePassword = document.getElementById("togglePassword");
       } else {
         showModal("✅ Login successful! Redirecting...");
         localStorage.setItem('isLoggedIn','TRUE');
+        localStorage.setItem('userId', data.user_id);
         setTimeout(() => {
           window.location.href = "dashboard.html";
         }, 1500);
       }
     });
-
-    let darkMode = localStorage.getItem('darkMode');

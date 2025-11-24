@@ -44,36 +44,54 @@ qsa(".btn-cancel[data-close]").forEach(btn => {
   });
 });
 
-qs("#saveIndustryBtn").onclick = () => {
-  const name = qs("#addIndustryName").value.trim();
-  const desc = qs("#addIndustryDesc").value.trim();
-  if(!name){
-    qs("#addIndustryName").focus();
-    return;
-  }
-  addRow({ name, desc });
-  qs("#addIndustryName").value = "";
-  qs("#addIndustryDesc").value = "";
-  hide(addModal);
-};
+qs("#saveIndustryBtn").onclick = async () => {
+// const name = qs("#addIndustryName").value.trim();
+//   const desc = qs("#addIndustryDesc").value.trim();
+//   if(!name){
+//     qs("#addIndustryName").focus();
+//     return;
+//   }
+//   addRow({ name, desc });
+//   qs("#addIndustryName").value = "";
+//   qs("#addIndustryDesc").value = "";
+//   hide(addModal);
+// };
 
-function addRow({name, desc}) {
-  const rowCount = tableBody.querySelectorAll("tr").length + 1;
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${rowCount}</td>
-    <td>${escapeHtml(name)}</td>
-    <td>${escapeHtml(desc)}</td>
-    <td class="action-icons">
-      <i class="bi bi-eye-fill icon-view" title="View"></i>
-      <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
-      <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
-    </td>
-  `;
-  tableBody.appendChild(tr);
-  // ADDED ↓ keep numbering consistent even after mixed add/delete
-  renumberRows();
-  // ADDED ↑
+//   async function addRow({name, desc}) {
+//   const rowCount = tableBody.querySelectorAll("tr").length + 1;
+//   const tr = document.createElement("tr");
+//   tr.innerHTML = `
+//     <td>${rowCount}</td>
+//     <td>${escapeHtml(name)}</td>
+//     <td>${escapeHtml(desc)}</td>
+//     <td class="action-icons">
+//       <i class="bi bi-eye-fill icon-view" title="View"></i>
+//       <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
+//       <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+//     </td>
+//   `;
+//   tableBody.appendChild(tr);
+//   // ADDED ↓ keep numbering consistent even after mixed add/delete
+//   renumberRows();
+//   // ADDED ↑
+
+  const name = qs("#addIndustryName").value.trim();
+      const desc = qs("#addIndustryDesc").value.trim();
+      if(!name){
+        qs("#addIndustryName").focus();
+        return;
+      }
+      
+      const result = await addIndustry(name, desc);
+        if(result.success === false) {
+          alert(result.message); //browser alert message
+        } else {
+          alert(result.message); //browser alert message
+          renumberRows(); //re fetch all industry and rebuild table
+          qs("#addIndustryName").value = "";
+          qs("#addIndustryDesc").value = "";
+          hide(addModal);
+        }
 }
 
 let rowToEdit   = null;
@@ -102,6 +120,8 @@ document.addEventListener("click", e => {
 
     qs("#editIndustryName").value = row.children[1].innerText;
     qs("#editIndustryDesc").value = row.children[2].innerText;
+    qs("#editIndustryId").value = row.children[4].innerText; //row of hidden td for industry_id
+
 
     show(editModal);
   }
@@ -109,7 +129,7 @@ document.addEventListener("click", e => {
   if (iconDelete) {
     const row  = iconDelete.closest("tr");
     rowToDelete = row;
-
+    qs("#deleteIndustryId").value = row.children[4].innerText; //row of hidden td for industry_id
     const name = row.children[1].innerText;
     qs("#deleteIndustryText").textContent =
       `Are you sure you want to delete "${name}"?`;
@@ -118,19 +138,29 @@ document.addEventListener("click", e => {
   }
 });
 
-qs("#updateIndustryBtn").onclick = () => {
+qs("#updateIndustryBtn").onclick = async () => {
   if (!rowToEdit) return;
 
   const newName = qs("#editIndustryName").value.trim();
   const newDesc = qs("#editIndustryDesc").value.trim();
-
+  const industryId = qs("#editIndustryId").value.trim();
+  
   if (newName) {
-    rowToEdit.children[1].innerText = newName;
+    console.log('asdada');
+    // rowToEdit.children[1].innerText = newName;
+    const result = await editIndustry(industryId, newName, newDesc);
+    if(result.success === false) {
+      alert(result.message); //browser alert message
+    } else {
+      alert(result.message); //browser alert message
+      renumberRows(); //reloads the table data
+      hide(editModal);
+      rowToEdit = null;
+    }
   }
-  rowToEdit.children[2].innerText = newDesc;
+  // rowToEdit.children[2].innerText = newDesc;
 
-  hide(editModal);
-  rowToEdit = null;
+      
 };
 
 const cancelDeleteBtn  = qs("#cancelDeleteBtn");
@@ -141,14 +171,24 @@ cancelDeleteBtn.onclick = () => {
   rowToDelete = null;
 };
 
-confirmDeleteBtn.onclick = () => {
+confirmDeleteBtn.onclick = async () => {
   if (rowToDelete) {
-    const tbody = rowToDelete.parentElement;
-    tbody.removeChild(rowToDelete);
-    renumberRows(); // you already had this
+    // const tbody = rowToDelete.parentElement;
+    // tbody.removeChild(rowToDelete);
+
+    const selectedIndustryId =  document.getElementById("deleteIndustryId").value;
+    const result = await deleteIndustry(selectedIndustryId);
+    if(result.success === false) {
+      alert(result.message); //browser alert message
+    } else {
+      alert(result.message); //browser alert message
+      document.getElementById("deleteIndustryId").value = "";
+      renumberRows(); // you already had this
+      hide(deleteOverlay);
+      rowToDelete = null;
+    }
   }
-  hide(deleteOverlay);
-  rowToDelete = null;
+
 };
 
 qs("#closeView").onclick = () => hide(viewOverlay);
@@ -167,10 +207,32 @@ qs("#searchInput").addEventListener("keyup", (e) => {
   });
 });
 
-function renumberRows() {
-  Array.from(tableBody.rows).forEach((tr, i) => {
-    tr.children[0].innerText = i + 1;
-  });
+  async function renumberRows() {
+  // Array.from(tableBody.rows).forEach((tr, i) => {
+  //   tr.children[0].innerText = i + 1;
+  // });
+   const result = await getIndustryList();
+  if(result.success === false) {
+    alert(result.message); //browser alert message
+  } else {
+    //added td for industry_id but only hidden
+    tableBody.innerHTML = "";
+    for(i=0; i<result.data.length; i++) {
+      tableBody.insertAdjacentHTML("beforeend",`
+        <tr>
+          <td>${i+1}</td>
+          <td>${result.data[i].industry_name}</td>
+          <td>${result.data[i].description}</td>
+          <td class="action-icons">
+            <i class="bi bi-eye-fill icon-view" title="View"></i>
+            <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
+            <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+          </td>
+          <td style='display:none;'>${result.data[i].industry_id}</td>
+        </tr>  
+        `);
+    }
+  }
 }
 
 // ADDED ↓ initial renumber on load (covers any pre-rendered rows)
@@ -189,3 +251,95 @@ function escapeHtml(str = "") {
 // ADDED ↓ close DOMContentLoaded wrapper
 });
 // ADDED ↑
+
+
+
+
+//GET LIST OF INDUSTRY FUNCTION
+async function getIndustryList()  {
+    const { data, error } = await supabase
+    .from('Industry')
+    .select("*")
+    .order("industry_id", { ascending: true });
+
+      if (error) {
+        return {
+            message: error,
+            success: false,
+            data: {}
+        }
+      } else {
+ 
+        return {
+            message: "got it",
+            success: true,
+            data: data
+        }
+      }
+}
+
+//ADD INDUSTRY FUNCTION
+async function addIndustry(industryName, industryDescription)  {
+    const { data, error } = await supabase
+        .from("Industry")
+        .insert([{ industry_name: industryName, description: industryDescription, createdAt: new Date().toLocaleString() }]) ;
+
+      if (error) {
+        return {
+            message: error,
+            success: false
+        }
+      } else {
+        return {
+            message: "Industry Added!",
+            success: true
+        }
+      }
+}
+
+//EDIT INDUSTRY FUNCTION
+async function editIndustry(industryId, industryName, industryDescription)  {
+     const { error } = await supabase
+    .from("Industry")
+    .update({ 
+      industry_name: industryName,
+      description: industryDescription,
+      modifiedAt: new Date().toLocaleString()
+    })
+    .eq("industry_id", industryId)  // your condition
+    .select();
+
+      if (error) {
+        return {
+            message: error,
+            success: false
+        }
+      } else {
+
+        return {
+            message: `Industry Updated!`,
+            success: true
+        }
+      }
+}
+
+//DELETE INDUSTRY FUNCTION
+async function deleteIndustry(industryId)  {
+    const { data, error } = await supabase
+    .from("Industry")
+    .delete()
+    .eq("industry_id", industryId)
+    .select()
+    .throwOnError(); 
+      if (error || data.length === 0) {
+        return {
+            message: error?.message || "Foreign key prevents deletion.",
+            success: false
+        }
+      } else {
+        return {
+            message: `Industry Deleted!`,
+            success: true
+        }
+      }
+}
