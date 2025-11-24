@@ -50,3 +50,5 @@ const togglePassword = document.getElementById("togglePassword");
         }, 1500);
       }
     });
+
+    let darkMode = localStorage.getItem('darkMode');
