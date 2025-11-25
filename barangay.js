@@ -35,9 +35,8 @@ async function renumberBarangays() {
                 <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
                 <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
               </td>
-              <td style='display:none;'>${
-                getBrgyResult.data[i].barangay_id
-              }</td> 
+              <td style='display:none;'>${getBrgyResult.data[i].barangay_id
+        }</td> 
             </tr>
             `
       );
@@ -238,7 +237,7 @@ async function getBarangayList() {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -259,7 +258,7 @@ async function addBarangay(barangayName) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -280,7 +279,7 @@ async function editBarangay(barangayId, barangayName) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {

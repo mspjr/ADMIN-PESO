@@ -63,28 +63,23 @@ document.addEventListener("DOMContentLoaded", function () {
                   
                   <td>${getEstablishment.data[i].industryType}</td>
                   <td>${statusBadge(getEstablishment.data[i].status)}</td>
-                  <td>${
-                    new Date(getEstablishment.data[i].createdAt)
-                      .toISOString()
-                      .split("T")[0]
-                  }</td>
+                  <td>${new Date(getEstablishment.data[i].createdAt)
+            .toISOString()
+            .split("T")[0]
+          }</td>
                   <td class="action-icons">
                     <i class="bi bi-eye-fill icon-view" title="View"></i>
                     <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
                     <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
                   </td>
-                  <td style='display:none;'>${
-                    getEstablishment.data[i].email
-                  }</td>
-                  <td style='display:none;'>${
-                    getEstablishment.data[i].contactNumber
-                  }</td> 
-                  <td style='display:none;'>${
-                    getEstablishment.data[i].address
-                  }</td> 
-                  <td style='display:none;'>${
-                    getEstablishment.data[i].establishment_id
-                  }</td>     
+                  <td style='display:none;'>${getEstablishment.data[i].email
+          }</td>
+                  <td style='display:none;'>${getEstablishment.data[i].contactNumber
+          }</td> 
+                  <td style='display:none;'>${getEstablishment.data[i].address
+          }</td> 
+                  <td style='display:none;'>${getEstablishment.data[i].establishment_id
+          }</td>     
             `;
       }
     }
@@ -368,18 +363,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const row = tableBody.insertRow();
         row.innerHTML = `
                   <td>${tableBody.rows.length}</td>
-                  <td>${getEmployers.data[i].firstName} ${
-          getEmployers.data[i].middleName ?? ""
-        } ${getEmployers.data[i].lastName ?? ""} ${
-          getEmployers.data[i].suffix ?? ""
-        }</td>
+                  <td>${getEmployers.data[i].firstName} ${getEmployers.data[i].middleName ?? ""
+          } ${getEmployers.data[i].lastName ?? ""} ${getEmployers.data[i].suffix ?? ""
+          }</td>
                   <td>${getEmployers.data[i].email}</td>
                   <td>${statusBadge(getEmployers.data[i].status)}</td>
-                  <td>${
-                    new Date(getEmployers.data[i].created_at)
-                      .toISOString()
-                      .split("T")[0]
-                  }</td>
+                  <td>${new Date(getEmployers.data[i].created_at)
+            .toISOString()
+            .split("T")[0]
+          }</td>
                   
                   <td class="action-icons">
                     <i class="bi bi-eye-fill icon-view-emp" title="View"></i>
@@ -387,12 +379,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     <i class="bi bi-trash3-fill icon-delete-emp" title="Delete"></i>
                   </td>
                   <td style='display:none;'>${getEmployers.data[i].user_id}</td>
-                  <td style='display:none;'>${
-                    getEmployers.data[i].firstName
-                  }</td>
-                  <td style='display:none;'>${
-                    getEmployers.data[i].lastName
-                  }</td>
+                  <td style='display:none;'>${getEmployers.data[i].firstName
+          }</td>
+                  <td style='display:none;'>${getEmployers.data[i].lastName
+          }</td>
 
             `;
       }
@@ -445,11 +435,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // addEmpModal.style.display = "none";
     // addEmployerForm.reset();
 
-    const addEmployertResult = await addEmployer(first, last, email, stat);
-    if (addEmployertResult.success === false) {
-      alert(addEmployertResult.message); //browser alert message
+    const addEmployerResult = await addEmployer(first, last, email, stat);
+    if (addEmployerResult.success === false) {
+      alert(addEmployerResult.message); //browser alert message
     } else {
-      alert(addEmployertResult.message); //browser alert message
+      alert(addEmployerResult.message); //browser alert message
       renumberEmployers();
       addEmpModal.style.display = "none";
       addEmployerForm.reset();
@@ -469,12 +459,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const date = row.dataset.date || row.children[4].textContent;
 
       empViewDetails.innerHTML = `
-        <p><b>Employer Name:</b><span>${fullName}</span></p>
-        <p><b>Email:</b><span>${email}</span></p>
-        <p><b>Status:</b><span>${
-          typeof status === "string" ? status : row.children[3].innerText
+        <p><b>Employer Name:  </b><span>${fullName}</span></p>
+        <p><b>Email:  </b><span>${email}</span></p>
+        <p><b>Status:  </b><span>${typeof status === "string" ? status : row.children[3].innerText
         }</span></p>
-        <p><b>Date Registered:</b><span>${date}</span></p>
+        <p><b>Date Registered:  </b><span>${date}</span></p>
       `;
       empViewOverlay.style.display = "flex";
       empViewOverlay.setAttribute("aria-hidden", "false");
@@ -633,7 +622,7 @@ async function getEstablishmentList() {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -667,7 +656,7 @@ async function addEstablishment(
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -700,7 +689,7 @@ async function editEstablishment(
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -718,7 +707,7 @@ async function deleteEstablishment(establishment_id) {
     .delete()
     .eq("establishment_id", establishment_id)
     .select()
-    .throwOnError();
+  // .throwOnError();
 
   if (error || data.length === 0) {
     return {
@@ -742,7 +731,7 @@ async function getIndustryList() {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -792,11 +781,12 @@ async function getEmployerList() {
     .from("Users")
     .select("*")
     .eq("role", "Employer")
+    .neq("status", "Deleted") // STATUS NOT EQUAL TO DELETED - only display non-deleted employers
     .order("user_id", { ascending: true });
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -825,7 +815,7 @@ async function addEmployer(first, last, email, stat) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -851,7 +841,7 @@ async function editEmployer(userId, first, last, email, stat) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -864,16 +854,37 @@ async function editEmployer(userId, first, last, email, stat) {
 
 // DELETE EMPLOYER FUNCTION
 async function deleteEmployer(userId) {
-  const { data, error } = await supabase
-    .from("Users")
-    .delete()
-    .eq("user_id", userId)
-    .select() // optional: returns deleted row
-    .throwOnError();
+  // const { data, error } = await supabase
+  //   .from("Users")
+  //   .delete()
+  //   .eq("user_id", userId)
+  //   .select() // optional: returns deleted row
+  // // .throwOnError();
 
-  if (error || data.length === 0) {
+  // if (error || data.length === 0) {
+  //   return {
+  //     message: error?.message || "Foreign key prevents deletion.",
+  //     success: false,
+  //   };
+  // } else {
+  //   return {
+  //     message: `Employer Deleted!`,
+  //     success: true,
+  //   };
+  // }
+
+  //does not delete the actual row but just changes the status to "Deleted"
+  const { error } = await supabase
+    .from("Users")
+    .update({
+      status: "Deleted",
+    })
+    .eq("user_id", userId) // your condition
+    .select();
+
+  if (error) {
     return {
-      message: error?.message || "Foreign key prevents deletion.",
+      message: error.message,
       success: false,
     };
   } else {

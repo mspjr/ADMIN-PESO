@@ -266,7 +266,7 @@ async function getSkillsList() {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -290,7 +290,7 @@ async function addSkill(name, related_job) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -314,7 +314,7 @@ async function editSkill(skills_id, name, related_job) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {

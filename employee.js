@@ -7,17 +7,52 @@ function toggleProfileMenu() {
   profileMenu.classList.toggle("show");
 }
 
+function statusBadge(text) {
+  const t = (text || "").toLowerCase();
+  if (t === "active") return '<span class="badge active">Active</span>';
+  if (t === "pending") return '<span class="badge pending">Pending</span>';
+  return '<span class="badge inactive">Inactive</span>';
+}
+
+const addEmployeeForm = document.getElementById("addEmployeeForm");
+
 const tableBody = document.getElementById("employeeTableBody");
 let deleteRowIndex = null;
 
 var addModal, editModal, viewOverlay, viewDetails, deleteOverlay;
+window.onload = renumberEmployees(); //load renumber function on page load
 
-function renumberEmployees() {
-  const tbody = document.getElementById("employeeTableBody");
-  if (!tbody) return;
-  Array.from(tbody.rows).forEach((tr, i) => {
-    if (tr.children[0]) tr.children[0].innerText = i + 1;
-  });
+async function renumberEmployees() {
+  // const tbody = document.getElementById("employeeTableBody");
+  // if (!tbody) return;
+  // Array.from(tbody.rows).forEach((tr, i) => {
+  //   if (tr.children[0]) tr.children[0].innerText = i + 1;
+  // });
+  const getEmployees = await getEmployeeList();
+  if (getEmployees.success === false) {
+    alert(getEmployees.message); //browser alert message
+  } else {
+    //added td for establishment_id but only hidden
+    const tableBody = document.getElementById("employeeTable").getElementsByTagName("tbody")[0];
+    tableBody.innerHTML = "";
+    for (i = 0; i < getEmployees.data.length; i++) {
+      const row = tableBody.insertRow();
+      row.innerHTML = `
+        <td>${tableBody.rows.length}</td>
+        <td>${getEmployees.data[i].firstName} ${getEmployees.data[i].middleName ?? ""} ${getEmployees.data[i].lastName ?? ""} ${getEmployees.data[i].suffix ?? ""}</td>
+        <td>${getEmployees.data[i].email}</td>
+        <td>${statusBadge(getEmployees.data[i].status)}</td>
+        <td>${new Date(getEmployees.data[i].created_at).toISOString().split("T")[0]}</td>          
+        <td class="action-icons">
+          <i class="bi bi-eye-fill icon-view" title="View"></i>
+          <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
+          <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+        </td>
+        <td style='display:none;'>${getEmployees.data[i].user_id}</td>
+        <td style='display:none;'>${getEmployees.data[i].firstName}</td>
+        <td style='display:none;'>${getEmployees.data[i].lastName}</td> `;
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -60,62 +95,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saveEmployeeBtn = document.getElementById("saveEmployeeBtn");
 
-  saveEmployeeBtn.onclick = () => {
-    const name = document.getElementById("addEmployeeName").value.trim();
-    const pos = document.getElementById("addEmployeePosition").value.trim();
-    const dept = document.getElementById("addEmployeeDept").value.trim();
+  const addEmployeeForm = document.getElementById("addEmployeeForm");
+  addEmployeeForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-    if (!name) return;
+    const first = document.getElementById("empFirstName").value.trim();
+    const last = document.getElementById("empLastName").value.trim();
+    const email = document.getElementById("empEmail").value.trim();
+    const stat = document.getElementById("empStatus").value;
 
-    const rowCount = tableBody.rows.length + 1;
-    tableBody.insertAdjacentHTML(
-      "beforeend",
-      `
-      <tr>
-        <td>${rowCount}</td>
-        <td>${name}</td>
-        <td>${pos}</td>
-        <td>${dept}</td>
-        <td class="action-icons">
-          <i class="bi bi-eye-fill icon-view" title="View"></i>
-          <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
-          <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
-        </td>
-      </tr>
-    `
-    );
-
-    renumberEmployees();
-
-    document.getElementById("addEmployeeName").value = "";
-    document.getElementById("addEmployeePosition").value = "";
-    document.getElementById("addEmployeeDept").value = "";
-    closeAddModal();
-  };
-
-  document.getElementById("updateEmployeeBtn").onclick = () => {
-    const row = tableBody.rows[editModal.dataset.row - 1];
-    row.children[1].innerText =
-      document.getElementById("editEmployeeName").value;
-    row.children[2].innerText = document.getElementById(
-      "editEmployeePosition"
-    ).value;
-    row.children[3].innerText =
-      document.getElementById("editEmployeeDept").value;
-    closeEditModal();
-  };
-
-  document.getElementById("confirmDeleteBtn").onclick = () => {
-    if (deleteRowIndex !== null) {
-      tableBody.deleteRow(deleteRowIndex - 1);
-      Array.from(tableBody.rows).forEach(
-        (tr, i) => (tr.children[0].innerText = i + 1)
-      );
+    const addEmployeeResult = await addEmployee(first, last, email, stat);
+    if (addEmployeeResult.success === false) {
+      alert(addEmployeeResult.message); //browser alert message
+    } else {
+      alert(addEmployeeResult.message); //browser alert message
+      renumberEmployees();
+      closeAddModal();
+      addEmployeeForm.reset();
     }
+  });
 
-    renumberEmployees();
-    closeDeleteModal();
-  };
+  const editEmployeeForm = document.getElementById("editEmpForm");
+  editEmployeeForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+
+    const first = document.getElementById("editEmpFirst").value.trim();
+    const last = document.getElementById("editEmpLast").value.trim();
+    const email = document.getElementById("editEmpEmail").value.trim();
+    const stat = document.getElementById("editEmpStatus").value;
+    const userId = document.getElementById("editEmpUserId").value;
+
+    const editEmployeeResult = await editEmployee(
+      userId,
+      first,
+      last,
+      email,
+      stat
+    );
+    if (editEmployeeResult.success === false) {
+      alert(editEmployeeResult.message); //browser alert message
+    } else {
+      alert(editEmployeeResult.message); //browser alert message
+      renumberEmployees();
+      closeEditModal();
+    }
+  });
+
+  document.getElementById("confirmDeleteBtn").onclick = async () => {
+    // if (deleteRowIndex !== null) {
+    //   tableBody.deleteRow(deleteRowIndex - 1);
+    //   Array.from(tableBody.rows).forEach(
+    //     (tr, i) => (tr.children[0].innerText = i + 1)
+    //   );
+    // }
+
+
+    const selectedUserId = document.getElementById("deleteEmpUserId").value;
+    const deleteEmployeeResult = await deleteEmployer(selectedUserId);
+    if (deleteEmployeeResult.success === false) {
+      alert(deleteEmployeeResult.message); //browser alert message
+    } else {
+      alert(deleteEmployeeResult.message); //browser alert message
+      document.getElementById("deleteEmpUserId").value = "";
+      renumberEmployees();
+      closeDeleteModal();
+    }
+  }
+
+
 
   document.getElementById("searchInput").addEventListener("keyup", (e) => {
     const q = e.target.value.toLowerCase();
@@ -150,13 +198,15 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("icon-view")) {
     const row = e.target.closest("tr");
     const name = row.children[1].innerText;
-    const pos = row.children[2].innerText;
-    const dept = row.children[3].innerText;
+    const email = row.children[2].innerText;
+    const status = row.children[3].innerText;
+    const dateRegistered = row.children[4].innerText;
 
     viewDetails.innerHTML = `
-      <p><b>Employee Name:</b><span>${name}</span></p>
-      <p><b>Position:</b><span>${pos}</span></p>
-      <p><b>Department:</b><span>${dept}</span></p>
+      <p><b>Employee Name: </b><span>${name}</span></p>
+      <p><b>Email: </b><span>${email}</span></p>
+      <p><b>Status: </b><span>${status}</span></p>
+      <p><b>Date Registered: </b><span>${dateRegistered}</span></p>
     `;
     viewOverlay.style.display = "flex";
     viewOverlay.setAttribute("aria-hidden", "false");
@@ -165,12 +215,16 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("icon-edit")) {
     const row = e.target.closest("tr");
     editModal.dataset.row = row.rowIndex;
-    document.getElementById("editEmployeeName").value =
-      row.children[1].innerText;
-    document.getElementById("editEmployeePosition").value =
-      row.children[2].innerText;
-    document.getElementById("editEmployeeDept").value =
-      row.children[3].innerText;
+    document.getElementById("editEmpFirst").value =
+      row.children[7].textContent; //hidden td for first name
+    document.getElementById("editEmpLast").value =
+      row.children[8].textContent; //hidden td for last name
+    document.getElementById("editEmpEmail").value =
+      row.children[2].textContent;
+    document.getElementById("editEmpStatus").value =
+      row.children[3].textContent;
+    document.getElementById("editEmpUserId").value =
+      row.children[6].textContent;
     editModal.style.display = "flex";
     editModal.setAttribute("aria-hidden", "false");
   }
@@ -178,6 +232,9 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("icon-delete")) {
     const row = e.target.closest("tr");
     deleteRowIndex = row.rowIndex;
+    const name = row.children[1].textContent;
+    document.getElementById("deleteEmpUserId").value = row.children[6].innerText; // also get user_id as reference for db to delete
+    deleteEmpBody.textContent = `Are you sure you want to delete "${name}"?`;
     deleteOverlay.style.display = "flex";
     deleteOverlay.setAttribute("aria-hidden", "false");
   }
@@ -196,11 +253,12 @@ async function getEmployeeList() {
     .from("Users")
     .select("*")
     .eq("role", "Worker")
+    .neq("status", "Deleted") // STATUS NOT EQUAL TO DELETED - only display non-deleted employees
     .order("user_id", { ascending: true });
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -229,7 +287,7 @@ async function addEmployee(first, last, email, stat) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -255,12 +313,12 @@ async function editEmployee(userId, first, last, email, stat) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
     return {
-      message: `Employer Updated!`,
+      message: `Employee Updated!`,
       success: true,
     };
   }
@@ -268,21 +326,42 @@ async function editEmployee(userId, first, last, email, stat) {
 
 // DELETE EMPLOYEE/WORKER FUNCTION
 async function deleteEmployer(userId) {
-  const { data, error } = await supabase
-    .from("Users")
-    .delete()
-    .eq("user_id", userId)
-    .select() // optional: returns deleted row
-    .throwOnError();
+  // const { data, error } = await supabase
+  //   .from("Users")
+  //   .delete()
+  //   .eq("user_id", userId)
+  //   .select() // optional: returns deleted row
+  //   .throwOnError();
 
-  if (error || data.length === 0) {
+  // if (error || data.length === 0) {
+  //   return {
+  //     message: error?.message || "Foreign key prevents deletion.",
+  //     success: false,
+  //   };
+  // } else {
+  //   return {
+  //     message: `Employer Deleted!`,
+  //     success: true,
+  //   };
+  // }
+
+  //does not delete the actual row but just changes the status to "Deleted"
+  const { error } = await supabase
+    .from("Users")
+    .update({
+      status: "Deleted",
+    })
+    .eq("user_id", userId) // your condition
+    .select();
+
+  if (error) {
     return {
-      message: error?.message || "Foreign key prevents deletion.",
+      message: error.message,
       success: false,
     };
   } else {
     return {
-      message: `Employer Deleted!`,
+      message: `Employee Deleted!`,
       success: true,
     };
   }

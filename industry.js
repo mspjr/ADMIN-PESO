@@ -267,7 +267,7 @@ async function getIndustryList() {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
       data: {},
     };
@@ -292,7 +292,7 @@ async function addIndustry(industryName, industryDescription) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
@@ -317,7 +317,7 @@ async function editIndustry(industryId, industryName, industryDescription) {
 
   if (error) {
     return {
-      message: error,
+      message: error.message,
       success: false,
     };
   } else {
