@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let editingRowIndex = null;
   let deleteRowIndex = null;
 
+  window.onload = getAllIndustry(); //get list of industry for industry drop down
+  window.onload = renumberSkilledJobs();
+
   async function renumberSkilledJobs() {
     // if (!tableBody) return;
     // [...tableBody.rows].forEach((r, i) => {
@@ -246,8 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
   renumberSkilledJobs();
 });
 
-window.onload = getAllIndustry(); //get list of industry for industry drop down
-window.onload = renumberSkilledJobs();
+
 
 //fill up industry drop down with list from Industry table (db)
 async function getAllIndustry() {
@@ -384,3 +386,4 @@ async function deleteSkilledJob(job_id) {
     };
   }
 }
+

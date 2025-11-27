@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("isLoggedIn") == "FALSE") {
     window.location.href = "./index.html";
   }
+
+  const userId = localStorage.getItem("userId");
   const profileIcon = document.getElementById("profileIcon");
   const profileDropdown = document.getElementById("profileDropdown");
 
@@ -176,7 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   jobForm.onsubmit = async (e) => {
     e.preventDefault();
+    console.log(userId)
     const vacancyData = {
+      user_id: userId,
       jobTitle: jobForm.jobTitle.value,
       industry: jobForm.industry.value,
       establishment: jobForm.establishment.value,
@@ -219,7 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
         vacancyData.establishment,
         vacancyData.location,
         vacancyData.employmentType,
-        vacancyData.status
+        vacancyData.status,
+        vacancyData.user_id
       );
       if (result.success === false) {
         alert(result.message); //browser alert message
@@ -521,7 +526,8 @@ async function addVacancy(
   establishment_id,
   location,
   employmentType,
-  status
+  status,
+  user_id
 ) {
   const { data, error } = await supabase.from("JobVacancy").insert([
     {
@@ -531,6 +537,7 @@ async function addVacancy(
       location: location,
       employment_type: employmentType,
       status: status,
+      user_id: user_id,
     },
   ]);
 
