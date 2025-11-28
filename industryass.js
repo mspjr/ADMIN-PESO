@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //all fetched data arrays
   fetchedIndustries = [];
   fetchedJobRoles = [];
+  fetchedJobAssignments = [];
 
   window.load = renderIndustryOptions();
   window.load = renderJobOptions();
@@ -124,11 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
       assignIndustry.innerHTML = '';
       // Create blank option
       const option = document.createElement("option");
-      const option2 = document.createElement("option");
-
-      // Add additional option for job indudstry select
+      // Add additional option for job industry select
       option.text = "No Industry";
-      option.value = "";
+      option.value = " ";
       // Append the option to the select element
       jobIndustry.appendChild(option);
 
@@ -147,9 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Set the text and value for the option
         option2.text = result.data[i].industry_name;
-        option2.value = result.data[i].industry_id;
+        option2.value = `${result.data[i].industry_id}/${result.data[i].industry_name}`;
         // Append the option to the select element
         assignIndustry.appendChild(option2);
+
       }
 
     }
@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Set the text and value for the option
       option.text = `${fetchedJobRoles[i].job_title + " (" + (fetchedJobRoles[i].industry ? fetchedJobRoles[i].industry : "No industry") + ")"}`;
-      option.value = fetchedJobRoles[i].job_role_id;
+      //value is divided by / to easily extract job role id, job title, industry id, industry name during add and delete of job assignment
+      option.value = `${fetchedJobRoles[i].job_role_id}/${fetchedJobRoles[i].job_title}/${fetchedJobRoles[i].industry_id}/${fetchedJobRoles[i].industry}`;
       // Append the option to the select element
       assignJob.appendChild(option);
 
@@ -282,8 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (result.success === false) {
       alert(result.message); //browser alert message
     } else {
-      //added td for industry_id but only hidden
-      fetchedJobRoles = result.data; //update fetched job roles
+
+      fetchedJobRoles = result.data; //update fetched job roles local array
       tbody.innerHTML = "";
       for (i = 0; i < result.data.length; i++) {
         tbody.insertAdjacentHTML(
@@ -312,35 +313,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function renderAssignmentsTable() {
+  async function renderAssignmentsTable() {
     const tbody = byId('tblAssignments')?.querySelector('tbody');
     const q = byId('searchInput')?.value.trim().toLowerCase() || '';
     if (!tbody) return;
     tbody.innerHTML = '';
-    state.assigns
-      .filter(a => {
-        if (!q) return true;
-        const iName = industryName(a.industryId).toLowerCase();
-        const jTitle = jobTitle(a.jobId).toLowerCase();
-        return iName.includes(q) || jTitle.includes(q);
-      })
-      .forEach(a => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${a.id}</td>
-          <td>${industryName(a.industryId)}</td>
-          <td>${jobTitle(a.jobId)}</td>
-          <td>
-            <span class="badge ${a.active ? 'bg-success' : 'bg-secondary'}">${a.active ? 'Active' : 'Inactive'}</span>
-          </td>
-          <td class="text-end">
-            <button class="btn btn-sm btn-light me-1" data-action="edit" data-id="${a.id}"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-light text-danger" data-action="del" data-id="${a.id}"><i class="bi bi-trash"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    renumberFirstCol(tbody);
+    // state.assigns
+    //   .filter(a => {
+    //     if (!q) return true;
+    //     const iName = industryName(a.industryId).toLowerCase();
+    //     const jTitle = jobTitle(a.jobId).toLowerCase();
+    //     return iName.includes(q) || jTitle.includes(q);
+    //   })
+    //   .forEach(a => {
+    //     const tr = document.createElement('tr');
+    //     tr.innerHTML = `
+    //       <td>${a.id}</td>
+    //       <td>${industryName(a.industryId)}</td>
+    //       <td>${jobTitle(a.jobId)}</td>
+    //       <td>
+    //         <span class="badge ${a.active ? 'bg-success' : 'bg-secondary'}">${a.active ? 'Active' : 'Inactive'}</span>
+    //       </td>
+    //       <td class="text-end">
+    //         <button class="btn btn-sm btn-light me-1" data-action="edit" data-id="${a.id}"><i class="bi bi-pencil"></i></button>
+    //         <button class="btn btn-sm btn-light text-danger" data-action="del" data-id="${a.id}"><i class="bi bi-trash"></i></button>
+    //       </td>
+    //     `;
+    //     tbody.appendChild(tr);
+    //   });
+    // renumberFirstCol(tbody);
+    const result = await getJobAssignmentList();
+    if (result.success === false) {
+      alert(result.message); //browser alert message
+    } else {
+      fetchedJobAssignments = result.data; //update fetched job assignments local array
+
+      tbody.innerHTML = "";
+      for (i = 0; i < result.data.length; i++) {
+        tbody.insertAdjacentHTML(
+          "beforeend",
+          `
+        <td>${i + 1}</td>
+        <td>${result.data[i].industry_name}</td>
+        <td>${result.data[i].job_title}</td>
+        <td>
+          <span class="badge ${result.data[i].isActive ? 'bg-success' : 'bg-secondary'}">${result.data[i].isActive ? 'Active' : 'Inactive'}</span>
+        </td>
+        <td class="text-end" style="width:100px;">
+          <button class="btn btn-sm btn-light me-1" data-action="edit" data-id="${result.data[i].job_assignment_id}"><i class="bi bi-pencil"></i></button>
+          <button class="btn btn-sm btn-light text-danger" data-action="del" data-id="${result.data[i].job_assignment_id}"><i class="bi bi-trash"></i></button>
+        </td>
+        <td style='display:none;'>${result.data[i].job_assignment_id}</td>
+        <td style='display:none;'>${result.data[i].job_industry_id}</td>
+        <td style='display:none;'>${result.data[i].job_industry_name}</td>
+        `
+        );
+      }
+    }
   }
 
   byId('btnAddIndustry')?.addEventListener('click', () => {
@@ -532,97 +561,134 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  dsfsdfs
-  functiosadn openAssignModal(editId = null) {
+
+  function openAssignModal(editId = null) {
     // renderIndustryOptions(byId('assignIndustry'), false);
-    renderIndustryOptions();
+
+    renderJobOptions();
     const industrySelect = byId('assignIndustry');
     const jobSelect = byId('assignJob');
+    // if (assignIndustryChangeHandler && industrySelect) {
+    //   industrySelect.removeEventListener('change', assignIndustryChangeHandler);
+    // }
 
-    if (assignIndustryChangeHandler && industrySelect) {
-      industrySelect.removeEventListener('change', assignIndustryChangeHandler);
-    }
+    // assignIndustryChangeHandler = () => {
+    //   const filter = industrySelect.value ? Number(industrySelect.value) : null;
+    //   renderJobOptions(jobSelect, filter);
+    // };
 
-    assignIndustryChangeHandler = () => {
-      const filter = industrySelect.value ? Number(industrySelect.value) : null;
-      renderJobOptions(jobSelect, filter);
-    };
+    // industrySelect?.addEventListener('change', assignIndustryChangeHandler);
 
-    industrySelect?.addEventListener('change', assignIndustryChangeHandler);
 
-    byId('assignId').value = '';
     byId('assignActive').checked = true;
 
     if (editId) {
-      const rec = state.assigns.find(a => a.id === editId);
+      const rec = fetchedJobAssignments.find(a => a.job_assignment_id == editId);
       if (!rec) return;
-      industrySelect.value = rec.industryId;
-      assignIndustryChangeHandler();
-      jobSelect.value = rec.jobId;
-      byId('assignId').value = rec.id;
-      byId('assignActive').checked = rec.active;
+
+      industrySelect.value = `${rec.industry_id}/${rec.industry_name}`.trim();
+      jobSelect.value = `${rec.job_role_id}/${rec.job_title}/${rec.job_industry_id}/${rec.job_industry_name}`;
+      byId('assignId').value = editId;
+      byId('assignActive').checked = rec.isActive;
       byId('modalAssign').querySelector('.modal-title').textContent = 'Edit Assignment';
+
+      // for (let option of industrySelect.options) {
+      //   if (option.value === `${rec.industry_id}/${rec.industry_name}`) {
+      //     option.selected = true;
+      //     break; // stop loop after selecting
+      //   }
+      // }
     } else {
-      if (state.industries.length) {
-        industrySelect.value = state.industries[0].id;
-        assignIndustryChangeHandler();
-      } else {
-        renderJobOptions(jobSelect, null);
-      }
+      renderIndustryOptions();
       byId('modalAssign').querySelector('.modal-title').textContent = 'Add Industry ⇄ Job Assignment';
     }
-
     modalAssign?.show();
   }
 
+  const select = document.getElementById("assignIndustry");
+
+  select.addEventListener("change", () => {
+    console.log("Value:", select.value);
+  });
+
   byId('openAssignModalBtn')?.addEventListener('click', () => openAssignModal());
 
-  byId('formAssign')?.addEventListener('submit', (e) => {
+  byId('formAssign')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const idVal = byId('assignId').value;
-    const industryId = Number(byId('assignIndustry').value);
-    const jobId = Number(byId('assignJob').value);
-    const active = byId('assignActive').checked;
+    // const industryId = Number(byId('assignIndustry').value);
+    // const jobId = Number(byId('assignJob').value);
+    const active = byId('assignActive').checked; //isActive check box
+    //extract job role id and industry id from the value split by / in the <select>
+    const [jobRoleId, jobTitle, jobIndustryId, jobIndustryName] = byId('assignJob').value.split("/");
+    const [industryId, industryName] = byId('assignIndustry').value.split("/");
 
-    const dup = state.assigns.find(a => a.industryId === industryId && a.jobId === jobId && a.id !== Number(idVal || 0));
+    //check for duplicate industry-job assignment
+    const dup = fetchedJobAssignments.some(a => a.industry_id == industryId && a.job_role_id == jobRoleId);
     if (dup) {
       alert('This Industry ⇄ Job link already exists.');
       return;
     }
 
     if (idVal) {
-      const idx = state.assigns.findIndex(a => a.id === Number(idVal));
-      state.assigns[idx].industryId = industryId;
-      state.assigns[idx].jobId = jobId;
-      state.assigns[idx].active = active;
+      //edit existing assignment in supabase
+      // const idx = state.assigns.findIndex(a => a.id === Number(idVal));
+      // state.assigns[idx].industryId = industryId;
+      // state.assigns[idx].jobId = jobId;
+      // state.assigns[idx].active = active;
+      const result = await editJobAssignment(idVal, industryId, industryName, jobRoleId, jobTitle, jobIndustryId, jobIndustryName, active);
+      if (result.success === false) {
+        alert(result.message); //browser alert message
+      } else {
+        alert(result.message); //browser alert message
+        renderAssignmentsTable();
+        modalAssign?.hide();
+      }
     } else {
-      state.idCounters.assign += 1;
-      state.assigns.push({
-        id: state.idCounters.assign,
-        industryId,
-        jobId,
-        active,
-        date: new Date().toISOString()
-      });
+      //add job assignment to supabase
+      const result = await addJobAssignment(industryId, industryName, jobRoleId, jobTitle, jobIndustryId, jobIndustryName, active);
+      if (result.success === false) {
+        alert(result.message); //browser alert message
+      } else {
+        alert(result.message); //browser alert message
+        renderAssignmentsTable();
+        modalAssign?.hide();
+      }
+      // state.idCounters.assign += 1;
+      // state.assigns.push({
+      //   id: state.idCounters.assign,
+      //   industryId,
+      //   jobId,
+      //   active,
+      //   date: new Date().toISOString()
+      // });
     }
 
-    saveStore(state);
+    // saveStore(state);
     renderAssignmentsTable();
     modalAssign?.hide();
   });
 
-  byId('tblAssignments')?.addEventListener('click', (e) => {
+  byId('tblAssignments')?.addEventListener('click', async (e) => {
     const btn = e.target.closest('button[data-action]');
     if (!btn) return;
-    const id = Number(btn.dataset.id);
+    const job_assignment_id = Number(btn.dataset.id);
     const action = btn.dataset.action;
 
-    if (action === 'edit') openAssignModal(id);
+    if (action === 'edit') openAssignModal(job_assignment_id);
     if (action === 'del') {
       if (!confirm('Delete this assignment?')) return;
-      state.assigns = state.assigns.filter(a => a.id !== id);
-      saveStore(state);
-      renderAssignmentsTable();
+      // state.assigns = state.assigns.filter(a => a.id !== id);
+      // saveStore(state);
+      const result = await deleteJobAssignment(job_assignment_id);
+      if (result.success === false) {
+        alert(result.message); //browser alert message
+      } else {
+        alert(result.message); //browser alert message
+        renderAssignmentsTable();
+
+      }
+
     }
   });
 
@@ -878,7 +944,7 @@ async function addJobAssignment(industry_id, industry_name, job_role_id, job_tit
       created_at: new Date().toLocaleString(),
     },
   ]);
-
+  console.log(industry_id, industry_name, job_role_id, job_title, job_industry_id, job_industry_name, isActive)
   if (error) {
     return {
       message: error.message,
