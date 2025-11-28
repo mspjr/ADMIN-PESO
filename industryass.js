@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const option = document.createElement("option");
       // Add additional option for job industry select
       option.text = "No Industry";
-      option.value = " ";
+      option.value = "";
       // Append the option to the select element
       jobIndustry.appendChild(option);
 
