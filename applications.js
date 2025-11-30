@@ -66,38 +66,38 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("applications", JSON.stringify(applications));
   }
 
-  function renumber() {
-    if (!tableBody) return;
-    Array.from(tableBody.rows).forEach((tr, i) => {
-      if (tr.children[0]) tr.children[0].textContent = i + 1;
-    });
-  }
+  // function renumber() {
+  //   if (!tableBody) return;
+  //   Array.from(tableBody.rows).forEach((tr, i) => {
+  //     if (tr.children[0]) tr.children[0].textContent = i + 1;
+  //   });
+  // }
 
-  function renderTable() {
-    if (!tableBody) return;
-    tableBody.innerHTML = "";
-    applications.forEach((app, index) => {
-      const tr = document.createElement("tr");
-      tr.dataset.index = index;
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${app.applicantName}</td>
-        <td>${app.jobTitle}</td>
-        <td>${app.establishment}</td>
-        <td>${app.status}</td>
-        <td>${app.dateApplied}</td>
-        <td class="action-icons">
-          <i class="bi bi-eye-fill icon-view" title="View"></i>
-          <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
-          <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
-        </td>
-      `;
-      tableBody.appendChild(tr);
-    });
-    renumber();
-  }
+  // function renderTable() {
+  //   if (!tableBody) return;
+  //   tableBody.innerHTML = "";
+  //   applications.forEach((app, index) => {
+  //     const tr = document.createElement("tr");
+  //     tr.dataset.index = index;
+  //     tr.innerHTML = `
+  //       <td>${index + 1}</td>
+  //       <td>${app.applicantName}</td>
+  //       <td>${app.jobTitle}</td>
+  //       <td>${app.establishment}</td>
+  //       <td>${app.status}</td>
+  //       <td>${app.dateApplied}</td>
+  //       <td class="action-icons">
+  //         <i class="bi bi-eye-fill icon-view" title="View"></i>
+  //         <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
+  //         <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+  //       </td>
+  //     `;
+  //     tableBody.appendChild(tr);
+  //   });
+  //   renumber();
+  // }
 
-  renderTable();
+  // renderTable();
 
   function openAddModal() {
     if (!appModal || !applicationForm) return;
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     saveApplications();
-    renderTable();
+    // renderTable();
     closeAppModal();
     applicationForm.reset();
     editIndexInput.value = "";
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (deleteIndex !== null) {
       applications.splice(deleteIndex, 1);
       saveApplications();
-      renderTable(); // re-render also re-numbers
+      // renderTable(); // re-render also re-numbers
     }
     if (deleteOverlay) {
       deleteOverlay.style.display = "none";
@@ -231,3 +231,121 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+window.onload = loadApplicants();
+
+async function loadApplicants() {
+  const results = await getApplicantsList();
+  if (results.success === false) {
+    alert(results.message); //browser alert message
+  } else {
+
+    const tableBody = document.getElementById("applicationsTable");
+    // tableBody.innerHTML = "";
+    for (i = 0; i < results.data.length; i++) {
+
+      const vacancyResults = await getVacancyDetailsById(results.data[i].job_vacancy_id);
+      if (vacancyResults.success === false) {
+        alert(vacancyResults.message); //browser alert message
+      } else {
+        const establishmentResults = await getEstablishmentDetailsById(vacancyResults.data[0].establishment_id);
+        if (establishmentResults.success === false) {
+          alert(establishmentResults.message); //browser alert message
+        } else {
+
+          tableBody.insertAdjacentHTML(
+            "beforeend",
+            `
+          <td>${+ 1}</td>
+          <td>${results.data[i].firstName} ${results.data[i].middleName} ${results.data[i].lastName}</td>
+          <td>${vacancyResults.data[0].job_title}</td>
+          <td>${establishmentResults.data[0].establishmentName}</td>
+          <td>${results.data[i].applicationStatus}</td>
+          <td>${results.data[i].createdDate}</td>
+          <td class="action-icons">
+            <i style='display:none;' class="bi bi-eye-fill icon-view" title="View"></i>
+            <i style='display:none;' class="bi bi-pencil-square icon-edit" title="Edit"></i>
+            <i style='display:none;' class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+          </td>
+            `
+          );
+        }
+
+      }
+    }
+
+
+  }
+}
+
+
+
+//GET LIST OF BRGY FUNCTION
+async function getApplicantsList() {
+  const { data, error } = await supabase
+    .from("JobApplication")
+    .select("*")
+    .order("application_id", { ascending: true });
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
+
+
+
+async function getVacancyDetailsById(vacancyId) {
+  const { data, error } = await supabase
+    .from("JobVacancy")
+    .select("*")
+    .eq("vacancy_id", vacancyId)
+    ;
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
+
+
+async function getEstablishmentDetailsById(establishmentId) {
+  const { data, error } = await supabase
+    .from("Establishment")
+    .select("*")
+    .eq("establishment_id", establishmentId)
+    ;
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
