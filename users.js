@@ -341,10 +341,47 @@ async function addUser(first, last, middle, email, role, stat) {
       success: false,
     };
   } else {
-    return {
-      message: `${role} Added!`,
-      success: true,
-    };
+
+    //get details of new user
+    const { data, error } = await supabase
+      .from("Users")
+      .select("*")
+      .order("user_id", { ascending: false }) // highest ID first
+      .limit(1); // only 1 row
+
+    if (error) {
+      return {
+        message: error.message,
+        success: false,
+        data: {},
+      };
+    } else {
+      //got the latest user added
+      //now insert to JobApplicationDetails table
+      const fullName = first + " " + (middle ? middle + " " : "") + last;
+      console.log(data);
+      //add also to JobAplication table
+      const { error } = await supabase.from("JobApplicationDetails").insert([
+        {
+          user_id: data[0].user_id,
+          fullName: fullName,
+
+        },
+      ]);
+
+      if (error) {
+        return {
+          message: error.message,
+          success: false,
+        };
+      } else {
+
+        return {
+          message: `User Added!`,
+          success: true,
+        };
+      }
+    }
   }
 }
 
