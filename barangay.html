@@ -94,7 +94,7 @@
         </tr>
       </thead>
       <tbody id="barangayTableBody">
-        <tr>
+        <!-- <tr>
           <td>1</td>
           <td>Apopong</td>
           <td class="action-icons">
@@ -102,7 +102,7 @@
             <i class="bi bi-pencil-square icon-edit" title="Edit"></i>
             <i class="bi bi-trash3-fill icon-delete" title="Delete"></i>
           </td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
   </main>
@@ -121,6 +121,8 @@
   <div class="modal-overlay" id="editModal" aria-hidden="true">
     <div class="modal-box">
       <h3>Edit Barangay</h3>
+      <!-- field for barangay id but hidden -->
+      <input type="hidden" id="editBarangayId"> 
       <input type="text" id="editBarangayInput">
       <div class="modal-actions">
         <button class="btn-save" id="updateBarangayBtn">Update</button>
@@ -132,6 +134,8 @@
   <div class="skl-overlay" id="viewOverlay" aria-hidden="true">
     <div class="skl-modal view-modal" role="dialog" aria-modal="true" aria-labelledby="barangayViewTitle">
       <h2 id="barangayViewTitle">👁️ View Barangay</h2>
+      <!-- field for barangay id but hidden -->
+      <input type="hidden" id="deleteBarangayId"> 
       <div id="viewDetails"></div>
       <div class="modal-actions">
         <button type="button" class="btn-close-modal" id="closeView">Close</button>

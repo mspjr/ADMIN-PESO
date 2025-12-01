@@ -157,14 +157,14 @@
           <div class="form-group">
             <label for="industry">Industry Type</label>
             <select id="industry" name="industry" required>
-              <option value="">Select Industry</option>
+              <!-- <option value="">Select Industry</option>
               <option>Construction</option>
               <option>Manufacturing</option>
               <option>Technology</option>
               <option>Retail</option>
               <option>Food & Beverage</option>
               <option>Services</option>
-              <option>Others</option>
+              <option>Others</option> -->
             </select>
           </div>
           <div class="form-group">
@@ -203,6 +203,8 @@
           <div class="form-group">
             <label for="editName">Establishment Name</label>
             <input type="text" id="editName" name="editName" required />
+            <!-- added hidden input field for establishment_id -->
+            <input type="hidden" id="editEstablishmentId" name="editEstablishmentId" required /> 
           </div>
           <div class="form-group">
             <label for="editOwner">Owner / Contact Person</label>
@@ -211,14 +213,14 @@
           <div class="form-group">
             <label for="editIndustry">Industry Type</label>
             <select id="editIndustry" name="editIndustry" required>
-              <option value="">Select Industry</option>
+              <!-- <option value="">Select Industry</option>
               <option>Construction</option>
               <option>Manufacturing</option>
               <option>Technology</option>
               <option>Retail</option>
               <option>Food & Beverage</option>
               <option>Services</option>
-              <option>Others</option>
+              <option>Others</option> -->
             </select>
           </div>
           <div class="form-group">
@@ -239,6 +241,7 @@
     <div class="skl-modal" role="dialog" aria-modal="true" aria-labelledby="deleteEstablishmentTitle">
       <h2 id="deleteEstablishmentTitle">⚠️ Delete Establishment</h2>
       <p id="deleteBody"></p>
+      <input type="hidden" id="deleteEstablishmentId"> 
       <div class="modal-actions">
         <button type="button" class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
         <button type="button" class="btn-delete" id="confirmDeleteBtn">Delete</button>
@@ -307,6 +310,7 @@
           <div class="form-group">
             <label for="editEmpFirst">First Name</label>
             <input type="text" id="editEmpFirst" name="editEmpFirst" required />
+            <input type="hidden" id="editEmpUserId" name="editEmpUserId" required />
           </div>
           <div class="form-group">
             <label for="editEmpLast">Last Name</label>
@@ -338,6 +342,7 @@
     <div class="skl-modal" role="dialog" aria-modal="true" aria-labelledby="deleteEmployerTitle">
       <h2 id="deleteEmployerTitle">⚠️ Delete Employer</h2>
       <p id="deleteEmpBody"></p>
+      <input type="hidden" id="deleteEmpUserId" name="deleteEmpUserId" required />
       <div class="modal-actions">
         <button type="button" class="btn-cancel" id="cancelDeleteEmpBtn">Cancel</button>
         <button type="button" class="btn-delete" id="confirmDeleteEmpBtn">Delete</button>
