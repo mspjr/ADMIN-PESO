@@ -1007,3 +1007,29 @@ async function deleteJobAssignment(job_assignment_id) {
     };
   }
 }
+
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("keyup", function () {
+  const filter = searchInput.value.toLowerCase();
+
+  filterTable("tblIndustries", filter);
+  filterTable("tblJobs", filter);
+  filterTable("tblAssignments", filter);
+});
+
+function filterTable(tableId, filter) {
+  const table = document.getElementById(tableId);
+  const rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let text = rows[i].textContent.toLowerCase();
+
+    if (text.includes(filter)) {
+      rows[i].style.display = "";
+    } else {
+      rows[i].style.display = "none";
+    }
+  }
+}
+
