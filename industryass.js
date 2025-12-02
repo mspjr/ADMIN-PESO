@@ -599,6 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //   }
       // }
     } else {
+      byId('assignId').value = '';
       renderIndustryOptions();
       byId('modalAssign').querySelector('.modal-title').textContent = 'Add Industry ⇄ Job Assignment';
     }
@@ -623,12 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const [jobRoleId, jobTitle, jobIndustryId, jobIndustryName] = byId('assignJob').value.split("/");
     const [industryId, industryName] = byId('assignIndustry').value.split("/");
 
-    //check for duplicate industry-job assignment
-    const dup = fetchedJobAssignments.some(a => a.industry_id == industryId && a.job_role_id == jobRoleId);
-    if (dup) {
-      alert('This Industry ⇄ Job link already exists.');
-      return;
-    }
+
 
     if (idVal) {
       //edit existing assignment in supabase
@@ -636,6 +632,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // state.assigns[idx].industryId = industryId;
       // state.assigns[idx].jobId = jobId;
       // state.assigns[idx].active = active;
+
+      //check for duplicate industry-job assignment
+      const dup = fetchedJobAssignments.some(a => a.industry_id == industryId && a.job_role_id == jobRoleId && a.job_assignment_id != idVal);
+      if (dup) {
+        alert('This Industry ⇄ Job link already exists.');
+        return;
+      }
+
       const result = await editJobAssignment(idVal, industryId, industryName, jobRoleId, jobTitle, jobIndustryId, jobIndustryName, active);
       if (result.success === false) {
         alert(result.message); //browser alert message
@@ -645,6 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
         modalAssign?.hide();
       }
     } else {
+
+      //check for duplicate industry-job assignment
+      const dup = fetchedJobAssignments.some(a => a.industry_id == industryId && a.job_role_id == jobRoleId);
+      if (dup) {
+        alert('This Industry ⇄ Job link already exists.');
+        return;
+      }
+
       //add job assignment to supabase
       const result = await addJobAssignment(industryId, industryName, jobRoleId, jobTitle, jobIndustryId, jobIndustryName, active);
       if (result.success === false) {
