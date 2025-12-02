@@ -164,7 +164,7 @@
                     <th style="width:70px">ID</th>
                     <th>Job Role</th>
                     <th>Skill</th>
-                    <th>Proficiency</th>
+                    <th>Prof.</th>
                     <th style="width:70px" class="text-end">Actions</th>
                   </tr>
                 </thead>
@@ -188,6 +188,8 @@
             <input type="hidden" id="jobId">
             <div class="mb-3">
               <label class="form-label">Job Title</label>
+              <input  class="form-control" id="jobIndustryId">
+              <input  class="form-control" id="jobIndustryName">
               <input class="form-control" id="jobTitle" required>
             </div>
             <div class="mb-3">
@@ -237,7 +239,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <input type="hidden" id="assignId">
+            <input type="text" id="assignId">
             <div class="mb-3">
               <label class="form-label">Job Role</label>
               <select class="form-select" id="assignJob" required></select>

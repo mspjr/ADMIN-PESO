@@ -216,61 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
   [...tableBody.rows].forEach((r, i) => (r.cells[0].textContent = i + 1));
 });
 
-// async function runJobMatching() {
-//   const result = await getVacancyList();
-//   if (result.success === false) {
-//     alert(result.message); //browser alert message
-//   } else {
-//     result.data.forEach(async (item, i) => {
-//       let establishmentId = result?.data[i]?.establishment_id;
-//       let industryId = result?.data[i]?.industry_id;
-//       let vacancyId = result?.data[i]?.vacancy_id;
-//       let jobTitle = result?.data[i]?.job_title;
-//       let location = result?.data[i]?.location;
-//       let employmentType = result?.data[i]?.employment_type;
-//       let status = result?.data[i]?.status;
-//       let createdDate = result?.data[i]?.created_date;
-//       let remarks = results?.data[i].remarks;
 
-//       let establishmentName = "";
-//       let industryName = "";
-
-//       let foundIndustryName = false;
-//       let foundEstablishmentName = false;
-
-//       //get industry name
-//       const jobIndustry = await getIndustryById(industryId);
-//       if (jobIndustry.success === false) {
-//         foundIndustryName = false;
-//       } else {
-//         console.log(2);
-//         industryName = jobIndustry.data[0].industry_name;
-//         foundIndustryName = true;
-
-//         const jobEstablishment = await getEstablishmentById(establishmentId);
-
-//         if (jobEstablishment.success === false) {
-//           foundEstablishmentName = false;
-//         } else {
-//           console.log(3);
-//           foundEstablishmentName = true;
-//           establishmentName = jobEstablishment.data[0].establishmentName;
-
-//           if (foundIndustryName && foundEstablishmentName) {
-//             console.log(jobTitle, i);
-//             const index = vacancyBody.rows.length + 1;
-
-//             //create a code here where I search for rows in WorkExperience table (supabase) and compare the values in position, address, company columns with the remarks, establishmentName ,industryName, jobTitle found inside this function and see if there are one with the same values or at least contains it.
-//             //the same thing should be done with the Eligibility table and compare the eligibilityName column with the remarks, jobTitle and industryName found inside this function
-//                      //the same thing should be done with the Trainings table and compare the trainingName and skills_acquired column with the remarks, jobTitle and industryName found inside this function.
-//                      //each similar word, exact word match, or word like it should be considers 1 point.
-//             //the WorkExperience, Eligibility and Trainings row results may contain multiple results with the same user_id, I need you to group them and count the points accumulated by each user_id  later on compare all the results and determine which user_id has the highest points of word matches
-//           }
-//         }
-//       }
-//     });
-//   }
-// }
 
 //GET LIST OF JOB VACANCIES FUNCTION
 async function getVacancyList() {
@@ -372,7 +318,7 @@ async function runJobMatching() {
   let index = 1; // for table indexing
 
   for (const vacancy of result.data) {
-    const {
+    let {
       establishment_id,
       industry_id,
       vacancy_id,
@@ -390,13 +336,16 @@ async function runJobMatching() {
     const industryName = industryRes.data[0].industry_name;
     const establishmentName = establishmentRes.data[0].establishmentName;
 
+    if (remarks == null || remarks.trim() === "") {
+      remarks = "N/A";
+    }
     const searchTerms = [
       remarks,
       establishmentName,
       industryName,
       job_title,
     ].filter(Boolean);
-
+    console.log(remarks, 'remarks');
     console.log("Terms for matching:", searchTerms);
 
     // Fetch matches
@@ -421,12 +370,11 @@ async function runJobMatching() {
         <tr>
           <td>${index++}</td>
           <td style='color:red'>No Match Found</td>
+          <td>${searchTerms[3]}</td>
           <td>${searchTerms[2]}</td>
           <td>${searchTerms[1]}</td>
-          <td>${searchTerms[0]}</td>
-          <td><span class="${
-            status == "Active" ? "badge active" : "badge pending"
-          }">${status}</span></td>
+          <td><span class="${status == "Active" ? "badge active" : "badge pending"
+        }">${status}</span></td>
           <td align=center>N/A</td>
         </tr>  
         `;
@@ -461,15 +409,13 @@ async function runJobMatching() {
     document.getElementById("matchingTable").innerHTML += `
         <tr>
           <td>${index++}</td>
-          <td>${foundUser.data[0]?.firstName} ${
-      foundUser.data[0]?.middleName ?? ""
-    } ${foundUser.data[0]?.lastName} ${foundUser.data[0]?.suffix ?? ""}</td>
+          <td>${foundUser.data[0]?.firstName} ${foundUser.data[0]?.middleName ?? ""
+      } ${foundUser.data[0]?.lastName} ${foundUser.data[0]?.suffix ?? ""}</td>
+          <td>${searchTerms[3]}</td>
           <td>${searchTerms[2]}</td>
           <td>${searchTerms[1]}</td>
-          <td>${searchTerms[0]}</td>
-          <td><span class="${
-            status == "Active" ? "badge active" : "badge pending"
-          }">${status}</span></td>
+          <td><span class="${status == "Active" ? "badge active" : "badge pending"
+      }">${status}</span></td>
           <td align=center>${top3[0].points}</td>
         </tr>  
         `;
