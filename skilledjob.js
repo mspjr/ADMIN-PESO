@@ -112,6 +112,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // `;
       //   tableBody.appendChild(tr);
 
+  const industryId= await getSelectedindustryId(industry);
+      
       const result = await addSkilledJob(title, industry);
       if (result.success === false) {
         alert(result.message); //browser alert message
@@ -121,6 +123,9 @@ document.addEventListener("DOMContentLoaded", function () {
         addEditModal.style.display = "none";
         addEditModal.setAttribute("aria-hidden", "true");
       }
+
+      const jobId= await getNewJobId();
+      const assignment=await setJobIndustryAssignment(industryId,jobId);
     } else {
       const skillsId = skilledJobIdInput.value.trim();
 
@@ -319,14 +324,91 @@ async function getSkilledJobList() {
   }
 }
 
+//get selected industry ID 
+async function getSelectedindustryId(industry) {
+  const { data, error } = await supabase
+    .from("Industry")
+    .select("industry_id")
+    .eq("industry_name", industry)
+    .order("industry_id", { ascending: true });
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
+
+//get newly added Job Id
+async function getNewJobId() {
+  const { data, error } = await supabase
+    .from("SkilledJob")
+    .select("job_id")
+    .order("createdAt", { ascending: false })
+    .limit(1);
+
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
+
+//set Job Industry Assignment
+async function setJobIndustryAssignment(industryid,jobid) {
+  /*const { data, error } = await supabase
+    .from("IndustryJobs")
+    .insert({industry_id: industryid,job_id: jobid})*/
+console.log (industryid);
+console.log (jobid);
+    const {data, error } = await supabase
+    .from("IndustryJobs")
+    .insert([
+        {industry_id: industryid,job_id: jobid},
+  ]);
+    
+
+  if (error) {
+    return {
+      message: error.message,
+      success: false,
+      data: {},
+    };
+  } else {
+    return {
+      message: "got it",
+      success: true,
+      data: data,
+    };
+  }
+}
+
 // ADD SKILL FUNCTION
 async function addSkilledJob(name, industry) {
+
   const { data, error } = await supabase.from("SkilledJob").insert([
     {
       job_name: name,
-      industry: industry,
     },
   ]);
+
 
   if (error) {
     return {
@@ -339,6 +421,7 @@ async function addSkilledJob(name, industry) {
       success: true,
     };
   }
+  
 }
 
 //EDIT SKILL FUNCTION
