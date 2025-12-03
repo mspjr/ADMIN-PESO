@@ -257,7 +257,7 @@ async function loadApplicants() {
           tableBody.insertAdjacentHTML(
             "beforeend",
             `
-          <td>${+ 1}</td>
+          <td>${i + 1}</td>
           <td>${results.data[i].firstName} ${results.data[i].middleName} ${results.data[i].lastName}</td>
           <td>${vacancyResults.data[0].job_title}</td>
           <td>${establishmentResults.data[0].establishmentName}</td>
