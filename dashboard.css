@@ -243,6 +243,9 @@ body.dashboard-body {
   margin-top: 30px;
   text-align: center;
   font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal {

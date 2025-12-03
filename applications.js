@@ -257,18 +257,19 @@ async function loadApplicants() {
           tableBody.insertAdjacentHTML(
             "beforeend",
             `
-          <td>${+ 1}</td>
+          <td>${i + 1}</td>
           <td>${results.data[i].firstName} ${results.data[i].middleName} ${results.data[i].lastName}</td>
           <td>${vacancyResults.data[0].job_title}</td>
           <td>${establishmentResults.data[0].establishmentName}</td>
           <td>${results.data[i].applicationStatus}</td>
           <td>${results.data[i].createdDate}</td>
-          <td class="action-icons">
-            <i style='display:none;' class="bi bi-eye-fill icon-view" title="View"></i>
-            <i style='display:none;' class="bi bi-pencil-square icon-edit" title="Edit"></i>
-            <i style='display:none;' class="bi bi-trash3-fill icon-delete" title="Delete"></i>
-          </td>
+
             `
+            //             <td class="action-icons">
+            //   <i style='display:none;' class="bi bi-eye-fill icon-view" title="View"></i>
+            //   <i style='display:none;' class="bi bi-pencil-square icon-edit" title="Edit"></i>
+            //   <i style='display:none;' class="bi bi-trash3-fill icon-delete" title="Delete"></i>
+            // </td>
           );
         }
 
